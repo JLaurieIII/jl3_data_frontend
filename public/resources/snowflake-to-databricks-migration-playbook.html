@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Snowflake to Databricks Migration Playbook | [BUSINESS NAME]</title>
+  <meta name="description" content="A step-by-step guide to migrating from Snowflake to Databricks. Covers schema translation, query conversion, reconciliation testing, and common pitfalls to avoid.">
+
+  <meta property="og:type" content="article">
+  <meta property="og:title" content="Snowflake to Databricks Migration Playbook">
+  <meta property="og:description" content="A step-by-step guide to migrating from Snowflake to Databricks with reconciliation testing.">
+  <meta property="og:url" content="https://[YOURDOMAIN.com]/resources/snowflake-to-databricks-migration-playbook.html">
+
+  <link rel="canonical" href="https://[YOURDOMAIN.com]/resources/snowflake-to-databricks-migration-playbook.html">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&family=Playfair+Display:wght@600;700&family=Source+Sans+3:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/css/styles.css">
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": "Snowflake to Databricks Migration Playbook",
+    "description": "A step-by-step guide to migrating from Snowflake to Databricks with reconciliation testing.",
+    "author": {
+      "@type": "Organization",
+      "name": "[BUSINESS NAME]"
+    },
+    "publisher": {
+      "@type": "Organization",
+      "name": "[BUSINESS NAME]"
+    }
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "How long does a Snowflake to Databricks migration take?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "A typical migration takes 4-12 weeks depending on data volume, query complexity, and team capacity. Simple migrations with fewer than 20 tables can be done in 4 weeks, while complex migrations with hundreds of tables and stored procedures may take 12+ weeks."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Can I run Snowflake and Databricks in parallel during migration?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Yes, running both platforms in parallel is recommended. This allows you to validate data accuracy before cutting over and provides a rollback option if issues arise."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "What are the biggest challenges in Snowflake to Databricks migration?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "The main challenges are SQL dialect differences (especially window functions and semi-structured data handling), stored procedure conversion, and ensuring data accuracy through reconciliation testing."
+        }
+      }
+    ]
+  }
+  </script>
+</head>
+<body>
+  <nav class="nav" role="navigation" aria-label="Main navigation">
+    <div class="nav-inner">
+      <a href="/" class="nav-logo" aria-label="[BUSINESS NAME] Home">[BUSINESS<span>NAME</span>]</a>
+      <button class="nav-toggle" aria-label="Toggle navigation menu" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+      <div class="nav-links">
+        <a href="/services/" class="nav-link">Services</a>
+        <a href="/case-studies/" class="nav-link">Case Studies</a>
+        <a href="/resources/" class="nav-link">Resources</a>
+        <a href="/about.html" class="nav-link">About</a>
+        <a href="/contact.html" class="nav-link">Contact</a>
+        <div class="nav-cta">
+          <a href="[CALENDLY]" class="btn btn-primary" target="_blank" rel="noopener">Book a Call</a>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <main>
+    <article>
+      <header class="article-header">
+        <div class="container">
+          <nav class="breadcrumbs">
+            <a href="/">Home</a>
+            <span>/</span>
+            <a href="/resources/">Resources</a>
+            <span>/</span>
+            <span>Migration Playbook</span>
+          </nav>
+          <div class="article-meta">
+            <span class="article-tag">Data Migration</span>
+          </div>
+          <h1 class="article-title">Snowflake to Databricks Migration Playbook</h1>
+          <p class="article-excerpt">A practical guide to migrating your data warehouse from Snowflake to Databricks. Covers schema translation, query conversion, reconciliation testing, and the common pitfalls that derail migrations.</p>
+        </div>
+      </header>
+
+      <div class="article-content">
+        <div class="container">
+          <div class="article-body">
+            <div class="toc">
+              <h4>Table of Contents</h4>
+              <ul>
+                <li><a href="#why-migrate">Why Migrate from Snowflake to Databricks?</a></li>
+                <li><a href="#pre-migration">Pre-Migration Assessment</a></li>
+                <li><a href="#schema-translation">Schema Translation</a></li>
+                <li><a href="#query-conversion">Query Conversion</a></li>
+                <li><a href="#data-migration">Data Migration Strategies</a></li>
+                <li><a href="#reconciliation">Reconciliation Testing</a></li>
+                <li><a href="#cutover">Cutover Planning</a></li>
+                <li><a href="#faq">Frequently Asked Questions</a></li>
+              </ul>
+            </div>
+
+            <h2 id="why-migrate">Why Migrate from Snowflake to Databricks?</h2>
+            <p>Organizations migrate from Snowflake to Databricks for several reasons:</p>
+            <ul>
+              <li><strong>Unified analytics:</strong> Databricks combines data engineering, data science, and ML workloads on a single platform</li>
+              <li><strong>Cost optimization:</strong> Depending on workload patterns, Databricks can offer significant cost savings</li>
+              <li><strong>Lakehouse architecture:</strong> Delta Lake provides ACID transactions on object storage with open formats</li>
+              <li><strong>ML/AI capabilities:</strong> Native MLflow integration and GPU support for advanced analytics</li>
+            </ul>
+            <p>That said, migration isn't right for everyone. If your team is primarily SQL-focused and happy with Snowflake's performance and pricing, the migration cost may not be justified.</p>
+
+            <h2 id="pre-migration">Pre-Migration Assessment</h2>
+            <p>Before writing any migration code, you need a complete inventory of what you're migrating:</p>
+
+            <h3>Data Inventory</h3>
+            <ul>
+              <li>List all databases, schemas, and tables with row counts and sizes</li>
+              <li>Identify partitioning strategies and clustering keys</li>
+              <li>Document semi-structured data (VARIANT columns)</li>
+              <li>Map data types that need translation</li>
+            </ul>
+
+            <h3>Query Inventory</h3>
+            <ul>
+              <li>Export query history to identify most-used queries</li>
+              <li>Catalog stored procedures and UDFs</li>
+              <li>Identify Snowflake-specific functions that need conversion</li>
+              <li>Document views and their dependencies</li>
+            </ul>
+
+            <h3>Downstream Dependencies</h3>
+            <ul>
+              <li>BI tools (Tableau, Looker, Power BI) and their connection methods</li>
+              <li>ETL/ELT pipelines that write to or read from Snowflake</li>
+              <li>Applications with direct database connections</li>
+              <li>Scheduled jobs and their dependencies</li>
+            </ul>
+
+            <h2 id="schema-translation">Schema Translation</h2>
+            <p>Most Snowflake data types have direct Databricks equivalents, but there are important differences:</p>
+
+            <h3>Data Type Mapping</h3>
+            <ul>
+              <li><code>VARIANT</code> → Use <code>STRING</code> with JSON functions or define explicit schema</li>
+              <li><code>GEOGRAPHY</code> → Use H3 or similar geospatial libraries</li>
+              <li><code>TIME</code> → <code>STRING</code> or calculate from <code>TIMESTAMP</code></li>
+              <li><code>NUMBER(38,0)</code> → <code>DECIMAL(38,0)</code> or <code>BIGINT</code></li>
+            </ul>
+
+            <h3>Schema Design Considerations</h3>
+            <p>Databricks with Delta Lake has different optimization patterns than Snowflake:</p>
+            <ul>
+              <li><strong>Partitioning:</strong> Choose partition columns carefully (typically date columns with low cardinality)</li>
+              <li><strong>Z-Ordering:</strong> Replaces Snowflake's clustering for frequently filtered columns</li>
+              <li><strong>Liquid Clustering:</strong> Newer alternative to traditional partitioning (Databricks 13.3+)</li>
+            </ul>
+
+            <h2 id="query-conversion">Query Conversion</h2>
+            <p>While both platforms use SQL, there are dialect differences that require conversion:</p>
+
+            <h3>Common Differences</h3>
+            <ul>
+              <li><code>FLATTEN</code> → <code>EXPLODE</code> or <code>LATERAL VIEW</code></li>
+              <li><code>QUALIFY</code> → Subquery with <code>WHERE</code> on window function</li>
+              <li><code>TRY_CAST</code> → <code>TRY_CAST</code> (same in newer Databricks)</li>
+              <li><code>GET_PATH</code> → <code>get_json_object</code> or dot notation</li>
+              <li><code>PARSE_JSON</code> → <code>from_json</code> with schema</li>
+            </ul>
+
+            <h3>Stored Procedures</h3>
+            <p>Snowflake stored procedures (JavaScript or Snowflake Scripting) need to be rewritten. Options include:</p>
+            <ul>
+              <li>Databricks SQL stored procedures (if simple)</li>
+              <li>Python notebooks or scripts</li>
+              <li>Databricks Workflows for orchestration</li>
+            </ul>
+
+            <h2 id="data-migration">Data Migration Strategies</h2>
+
+            <h3>Option 1: Direct Export/Import</h3>
+            <p>For smaller datasets, export from Snowflake to cloud storage, then import to Databricks:</p>
+            <ol>
+              <li>Use <code>COPY INTO</code> to export Snowflake tables to Parquet in S3/Azure/GCS</li>
+              <li>Create Delta tables in Databricks from the Parquet files</li>
+              <li>Run <code>OPTIMIZE</code> and <code>VACUUM</code> to clean up</li>
+            </ol>
+
+            <h3>Option 2: Change Data Capture</h3>
+            <p>For larger datasets or zero-downtime migrations:</p>
+            <ol>
+              <li>Initial bulk load of historical data</li>
+              <li>Set up CDC stream from Snowflake (using Snowflake Streams or third-party tools)</li>
+              <li>Apply changes incrementally to Databricks</li>
+              <li>Validate and cut over when in sync</li>
+            </ol>
+
+            <h3>Option 3: Dual-Write</h3>
+            <p>If you control the upstream pipelines:</p>
+            <ol>
+              <li>Modify pipelines to write to both Snowflake and Databricks</li>
+              <li>Backfill historical data to Databricks</li>
+              <li>Validate both systems match</li>
+              <li>Switch downstream consumers to Databricks</li>
+              <li>Retire Snowflake writes</li>
+            </ol>
+
+            <h2 id="reconciliation">Reconciliation Testing</h2>
+            <p>This is the most critical phase. Data discrepancies after migration destroy trust and cause downstream issues.</p>
+
+            <h3>Row Count Validation</h3>
+            <p>Start with the basics - row counts should match exactly for each table:</p>
+            <pre><code>-- Snowflake
+SELECT 'orders' as table_name, COUNT(*) as row_count FROM orders
+UNION ALL
+SELECT 'customers', COUNT(*) FROM customers;
+
+-- Compare with equivalent Databricks queries</code></pre>
+
+            <h3>Aggregate Validation</h3>
+            <p>Sum, average, min, and max on numeric columns should match:</p>
+            <pre><code>SELECT
+  SUM(amount) as sum_amount,
+  AVG(amount) as avg_amount,
+  COUNT(DISTINCT customer_id) as unique_customers
+FROM orders
+WHERE order_date >= '2024-01-01';</code></pre>
+
+            <h3>Sample-Based Row Comparison</h3>
+            <p>For large tables, compare a random sample of rows column by column:</p>
+            <ol>
+              <li>Select 0.1-1% of rows using consistent sampling</li>
+              <li>Export from both systems</li>
+              <li>Compare row by row, flagging any differences</li>
+              <li>Investigate and fix discrepancies</li>
+            </ol>
+
+            <h3>Automated Reconciliation Framework</h3>
+            <p>Build reusable reconciliation scripts that:</p>
+            <ul>
+              <li>Run nightly during parallel operation</li>
+              <li>Alert on any discrepancies above threshold</li>
+              <li>Generate detailed reports for investigation</li>
+              <li>Track trends over time</li>
+            </ul>
+
+            <h2 id="cutover">Cutover Planning</h2>
+            <p>Plan your cutover carefully to minimize risk:</p>
+
+            <h3>Pre-Cutover Checklist</h3>
+            <ul>
+              <li>All reconciliation tests passing for 7+ consecutive days</li>
+              <li>All downstream consumers tested against Databricks</li>
+              <li>Rollback plan documented and tested</li>
+              <li>Team trained on Databricks operations</li>
+              <li>Monitoring and alerting configured</li>
+            </ul>
+
+            <h3>Cutover Sequence</h3>
+            <ol>
+              <li>Final reconciliation check</li>
+              <li>Stop writes to Snowflake</li>
+              <li>Apply any final changes to Databricks</li>
+              <li>Switch downstream consumers</li>
+              <li>Monitor for issues</li>
+              <li>Keep Snowflake available for rollback (1-2 weeks)</li>
+            </ol>
+
+            <h2 id="faq">Frequently Asked Questions</h2>
+
+            <h3>How long does a Snowflake to Databricks migration take?</h3>
+            <p>A typical migration takes 4-12 weeks depending on data volume, query complexity, and team capacity. Simple migrations with fewer than 20 tables can be done in 4 weeks, while complex migrations with hundreds of tables and stored procedures may take 12+ weeks.</p>
+
+            <h3>Can I run Snowflake and Databricks in parallel during migration?</h3>
+            <p>Yes, and this is highly recommended. Running both platforms in parallel allows you to validate data accuracy before cutting over and provides a rollback option if issues arise. Plan for 2-4 weeks of parallel operation.</p>
+
+            <h3>What are the biggest challenges in Snowflake to Databricks migration?</h3>
+            <p>The main challenges are:</p>
+            <ul>
+              <li>SQL dialect differences (especially window functions and semi-structured data handling)</li>
+              <li>Stored procedure conversion (JavaScript/Snowflake Scripting to Python/SQL)</li>
+              <li>Ensuring data accuracy through reconciliation testing</li>
+              <li>Retraining teams on Databricks operations and debugging</li>
+            </ul>
+
+            <h3>Should I use Unity Catalog?</h3>
+            <p>Yes, for new Databricks deployments, Unity Catalog is recommended. It provides centralized governance, fine-grained access control, and data lineage tracking that matches or exceeds Snowflake's governance capabilities.</p>
+          </div>
+
+          <div class="card mt-12" style="background: var(--color-light-secondary); border: none;">
+            <h3>Need help with your migration?</h3>
+            <p class="text-light">I've helped companies migrate from Snowflake to Databricks with zero data discrepancies. <a href="/contact.html">Get in touch</a> to discuss your project, or check out my <a href="/services/data-engineering.html">data engineering services</a>.</p>
+            <a href="[CALENDLY]" class="btn btn-primary" target="_blank" rel="noopener">Book a Free Call</a>
+          </div>
+        </div>
+      </div>
+    </article>
+  </main>
+
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <a href="/" class="nav-logo">[BUSINESS<span>NAME</span>]</a>
+          <p>Data engineering, automation, and data feed consulting.</p>
+        </div>
+        <div>
+          <h5>Services</h5>
+          <ul class="footer-links">
+            <li><a href="/services/data-engineering.html">Data Engineering</a></li>
+            <li><a href="/services/automation.html">Automation</a></li>
+            <li><a href="/services/data-feeds.html">Data Feeds</a></li>
+          </ul>
+        </div>
+        <div>
+          <h5>Resources</h5>
+          <ul class="footer-links">
+            <li><a href="/case-studies/">Case Studies</a></li>
+            <li><a href="/resources/">Articles</a></li>
+            <li><a href="/contact.html">Contact</a></li>
+          </ul>
+        </div>
+        <div>
+          <h5>Legal</h5>
+          <ul class="footer-links">
+            <li><a href="/privacy.html">Privacy Policy</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>&copy; 2024 [BUSINESS NAME]. All rights reserved.</p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="/assets/js/main.js"></script>
+</body>
+</html>

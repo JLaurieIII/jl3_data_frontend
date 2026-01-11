@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Incremental Web Scraping & Data Feeds | [BUSINESS NAME]</title>
+  <meta name="description" content="How to build scrapers that only fetch what's changed. Covers change detection, delta processing, monitoring strategies, and production-grade architecture.">
+
+  <meta property="og:type" content="article">
+  <meta property="og:title" content="Incremental Web Scraping & Data Feeds">
+  <meta property="og:description" content="Building efficient scrapers with change detection and incremental updates.">
+  <meta property="og:url" content="https://[YOURDOMAIN.com]/resources/incremental-web-scraping-data-feeds.html">
+
+  <link rel="canonical" href="https://[YOURDOMAIN.com]/resources/incremental-web-scraping-data-feeds.html">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&family=Playfair+Display:wght@600;700&family=Source+Sans+3:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/css/styles.css">
+
+  <script type="application/ld+json">
+  {"@context": "https://schema.org", "@type": "Article", "headline": "Incremental Web Scraping & Data Feeds", "author": {"@type": "Organization", "name": "[BUSINESS NAME]"}}
+  </script>
+</head>
+<body>
+  <nav class="nav" role="navigation" aria-label="Main navigation">
+    <div class="nav-inner">
+      <a href="/" class="nav-logo">[BUSINESS<span>NAME</span>]</a>
+      <button class="nav-toggle" aria-label="Toggle navigation menu" aria-expanded="false"><span></span><span></span><span></span></button>
+      <div class="nav-links">
+        <a href="/services/" class="nav-link">Services</a>
+        <a href="/case-studies/" class="nav-link">Case Studies</a>
+        <a href="/resources/" class="nav-link">Resources</a>
+        <a href="/about.html" class="nav-link">About</a>
+        <a href="/contact.html" class="nav-link">Contact</a>
+        <div class="nav-cta"><a href="[CALENDLY]" class="btn btn-primary" target="_blank" rel="noopener">Book a Call</a></div>
+      </div>
+    </div>
+  </nav>
+
+  <main>
+    <article>
+      <header class="article-header">
+        <div class="container">
+          <nav class="breadcrumbs"><a href="/">Home</a><span>/</span><a href="/resources/">Resources</a><span>/</span><span>Incremental Scraping</span></nav>
+          <div class="article-meta"><span class="article-tag">Data Feeds</span></div>
+          <h1 class="article-title">Incremental Web Scraping & Data Feeds</h1>
+          <p class="article-excerpt">Full crawls are slow and expensive. Here's how to build scrapers that only fetch what's changed, saving time, bandwidth, and money.</p>
+        </div>
+      </header>
+
+      <div class="article-content">
+        <div class="container">
+          <div class="article-body">
+            <div class="toc">
+              <h4>Table of Contents</h4>
+              <ul>
+                <li><a href="#why">Why Incremental?</a></li>
+                <li><a href="#change-detection">Change Detection Strategies</a></li>
+                <li><a href="#architecture">Architecture Patterns</a></li>
+                <li><a href="#monitoring">Monitoring & Alerting</a></li>
+                <li><a href="#code">Implementation Examples</a></li>
+                <li><a href="#faq">FAQ</a></li>
+              </ul>
+            </div>
+
+            <h2 id="why">Why Incremental?</h2>
+            <p>Imagine scraping 100,000 products daily. A full crawl might take 8 hours and make 100,000 requests. But what if only 1% of products change daily?</p>
+
+            <h3>Full Crawl Problems</h3>
+            <ul>
+              <li><strong>Time:</strong> Hours to complete</li>
+              <li><strong>Cost:</strong> Bandwidth, compute, proxy costs</li>
+              <li><strong>Risk:</strong> More requests = more likely to get blocked</li>
+              <li><strong>Freshness:</strong> Data at end of crawl may be stale</li>
+            </ul>
+
+            <h3>Incremental Benefits</h3>
+            <ul>
+              <li><strong>Speed:</strong> Process only what changed (maybe 1-10%)</li>
+              <li><strong>Cost:</strong> 90%+ reduction in requests</li>
+              <li><strong>Stealth:</strong> Fewer requests, less likely to trigger blocks</li>
+              <li><strong>History:</strong> Track changes over time</li>
+            </ul>
+
+            <h2 id="change-detection">Change Detection Strategies</h2>
+
+            <h3>1. Hash-Based Detection</h3>
+            <p>The simplest approach: hash the content and compare to the previous hash.</p>
+            <pre><code>import hashlib
+
+def content_hash(data):
+    """Generate hash of relevant fields only"""
+    relevant = {
+        'price': data.get('price'),
+        'stock': data.get('stock_status'),
+        'title': data.get('title')
+    }
+    content = json.dumps(relevant, sort_keys=True)
+    return hashlib.md5(content.encode()).hexdigest()
+
+def has_changed(item, previous_hash):
+    current_hash = content_hash(item)
+    return current_hash != previous_hash</code></pre>
+
+            <h3>2. HTTP Headers</h3>
+            <p>Use Last-Modified and ETag headers when available:</p>
+            <pre><code>import requests
+
+def fetch_if_changed(url, last_etag=None, last_modified=None):
+    headers = {}
+    if last_etag:
+        headers['If-None-Match'] = last_etag
+    if last_modified:
+        headers['If-Modified-Since'] = last_modified
+
+    response = requests.get(url, headers=headers)
+
+    if response.status_code == 304:
+        return None  # Not modified
+
+    return {
+        'content': response.text,
+        'etag': response.headers.get('ETag'),
+        'last_modified': response.headers.get('Last-Modified')
+    }</code></pre>
+
+            <h3>3. Sitemap Monitoring</h3>
+            <p>Many sites include lastmod dates in sitemaps:</p>
+            <pre><code>from xml.etree import ElementTree
+import requests
+
+def get_changed_urls(sitemap_url, since_date):
+    response = requests.get(sitemap_url)
+    root = ElementTree.fromstring(response.content)
+
+    changed = []
+    for url in root.findall('.//{http://www.sitemaps.org/schemas/sitemap/0.9}url'):
+        loc = url.find('{http://www.sitemaps.org/schemas/sitemap/0.9}loc').text
+        lastmod = url.find('{http://www.sitemaps.org/schemas/sitemap/0.9}lastmod')
+
+        if lastmod is not None and lastmod.text > since_date:
+            changed.append(loc)
+
+    return changed</code></pre>
+
+            <h3>4. API-Based Updates</h3>
+            <p>If the source has an API with timestamps or change feeds:</p>
+            <pre><code># Many APIs support filtering by updated_at
+params = {
+    'updated_after': last_sync_timestamp,
+    'per_page': 100
+}
+response = requests.get(api_url, params=params)</code></pre>
+
+            <h2 id="architecture">Architecture Patterns</h2>
+
+            <h3>Basic Architecture</h3>
+            <pre><code>┌─────────────┐     ┌──────────────┐     ┌─────────────┐
+│   Scheduler │────▶│   Scraper    │────▶│   Storage   │
+│  (Airflow)  │     │  (Scrapy)    │     │  (Postgres) │
+└─────────────┘     └──────────────┘     └─────────────┘
+                           │
+                           ▼
+                    ┌──────────────┐
+                    │ Change Store │
+                    │  (Redis/DB)  │
+                    └──────────────┘</code></pre>
+
+            <h3>Components</h3>
+            <ul>
+              <li><strong>Scheduler:</strong> Triggers crawls on schedule (Airflow, cron, Prefect)</li>
+              <li><strong>Scraper:</strong> Fetches and parses data (Scrapy, custom Python)</li>
+              <li><strong>Change Store:</strong> Tracks hashes/timestamps for comparison</li>
+              <li><strong>Storage:</strong> Stores current data and change history</li>
+            </ul>
+
+            <h3>Database Schema</h3>
+            <pre><code>CREATE TABLE items (
+    id SERIAL PRIMARY KEY,
+    source_id VARCHAR(255) UNIQUE,
+    data JSONB,
+    content_hash VARCHAR(32),
+    first_seen_at TIMESTAMP,
+    last_seen_at TIMESTAMP,
+    last_changed_at TIMESTAMP
+);
+
+CREATE TABLE item_history (
+    id SERIAL PRIMARY KEY,
+    item_id INTEGER REFERENCES items(id),
+    data JSONB,
+    changed_at TIMESTAMP,
+    change_type VARCHAR(50)  -- 'created', 'updated', 'deleted'
+);</code></pre>
+
+            <h2 id="monitoring">Monitoring & Alerting</h2>
+
+            <h3>What to Monitor</h3>
+            <ul>
+              <li><strong>Success rate:</strong> % of URLs successfully scraped</li>
+              <li><strong>Change rate:</strong> % of items that changed (sudden drops = possible issue)</li>
+              <li><strong>Duration:</strong> Is the job taking longer than usual?</li>
+              <li><strong>Error types:</strong> 403s, 429s, timeouts, parse errors</li>
+              <li><strong>Data freshness:</strong> When was data last updated?</li>
+            </ul>
+
+            <h3>Alert Conditions</h3>
+            <pre><code># Alert if success rate drops below threshold
+if success_rate < 0.95:
+    alert(f"Scraper success rate dropped to {success_rate}")
+
+# Alert if no changes detected (might indicate broken scraper)
+if change_rate == 0 and expected_changes > 0:
+    alert("No changes detected - verify scraper is working")
+
+# Alert if duration exceeds normal + 50%
+if duration > normal_duration * 1.5:
+    alert(f"Scraper running slow: {duration}s vs normal {normal_duration}s")</code></pre>
+
+            <h3>Health Dashboard</h3>
+            <p>Build a simple dashboard showing:</p>
+            <ul>
+              <li>Last successful run time</li>
+              <li>Items processed / changed / errors</li>
+              <li>Historical trends</li>
+              <li>Current job status</li>
+            </ul>
+
+            <h2 id="code">Implementation Examples</h2>
+
+            <h3>Scrapy with Incremental Logic</h3>
+            <pre><code>import scrapy
+import hashlib
+import redis
+
+class IncrementalSpider(scrapy.Spider):
+    name = 'incremental'
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.redis = redis.Redis()
+
+    def parse(self, response):
+        for product in response.css('.product'):
+            item = {
+                'id': product.css('::attr(data-id)').get(),
+                'title': product.css('.title::text').get(),
+                'price': product.css('.price::text').get(),
+            }
+
+            # Check if changed
+            current_hash = self.hash_item(item)
+            previous_hash = self.redis.get(f"hash:{item['id']}")
+
+            if previous_hash is None or current_hash != previous_hash.decode():
+                # New or changed - yield for processing
+                self.redis.set(f"hash:{item['id']}", current_hash)
+                yield item
+
+    def hash_item(self, item):
+        content = json.dumps(item, sort_keys=True)
+        return hashlib.md5(content.encode()).hexdigest()</code></pre>
+
+            <h3>Change History Recording</h3>
+            <pre><code>def save_with_history(item, db):
+    existing = db.query(
+        "SELECT * FROM items WHERE source_id = %s",
+        (item['id'],)
+    )
+
+    if existing is None:
+        # New item
+        db.execute("""
+            INSERT INTO items (source_id, data, content_hash,
+                             first_seen_at, last_seen_at, last_changed_at)
+            VALUES (%s, %s, %s, NOW(), NOW(), NOW())
+        """, (item['id'], json.dumps(item), hash_item(item)))
+
+        record_history(item, 'created', db)
+
+    elif hash_item(item) != existing['content_hash']:
+        # Changed
+        db.execute("""
+            UPDATE items
+            SET data = %s, content_hash = %s,
+                last_seen_at = NOW(), last_changed_at = NOW()
+            WHERE source_id = %s
+        """, (json.dumps(item), hash_item(item), item['id']))
+
+        record_history(item, 'updated', db)
+
+    else:
+        # Unchanged - just update last_seen
+        db.execute("""
+            UPDATE items SET last_seen_at = NOW() WHERE source_id = %s
+        """, (item['id'],))</code></pre>
+
+            <h2 id="faq">Frequently Asked Questions</h2>
+
+            <h3>How do I detect deleted items?</h3>
+            <p>Track items that weren't seen in the latest crawl. If an item's last_seen_at is older than the last crawl time, it may have been deleted. Implement a grace period before marking as deleted.</p>
+
+            <h3>What about sites without stable IDs?</h3>
+            <p>Create synthetic IDs from stable attributes (URL, SKU, combination of title + other unique fields). Hash these to create a consistent identifier.</p>
+
+            <h3>How often should I do full crawls?</h3>
+            <p>Even with incremental updates, periodic full crawls catch anything missed. Weekly or monthly full crawls are common, depending on data criticality.</p>
+
+            <div class="card mt-12" style="background: var(--color-light-secondary); border: none;">
+              <h3>Need help building data feeds?</h3>
+              <p class="text-light">I build production-grade scrapers with incremental updates and monitoring. <a href="/contact.html">Get in touch</a> to discuss your project.</p>
+              <a href="[CALENDLY]" class="btn btn-primary" target="_blank" rel="noopener">Book a Free Call</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </article>
+  </main>
+
+  <footer class="footer">
+    <div class="container"><div class="footer-bottom"><p>&copy; 2024 [BUSINESS NAME]. All rights reserved.</p></div></div>
+  </footer>
+
+  <script src="/assets/js/main.js"></script>
+</body>
+</html>

@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HubSpot Custom Code & Dedupe Workflows | [BUSINESS NAME]</title>
+  <meta name="description" content="Using HubSpot Operations Hub custom code for advanced deduplication, data cleanup, and workflow automation. Includes working code examples.">
+
+  <meta property="og:type" content="article">
+  <meta property="og:title" content="HubSpot Custom Code & Dedupe Workflows">
+  <meta property="og:description" content="Advanced HubSpot Operations Hub techniques for deduplication and data cleanup.">
+  <meta property="og:url" content="https://[YOURDOMAIN.com]/resources/hubspot-custom-code-dedupe-workflows.html">
+
+  <link rel="canonical" href="https://[YOURDOMAIN.com]/resources/hubspot-custom-code-dedupe-workflows.html">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&family=Playfair+Display:wght@600;700&family=Source+Sans+3:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/css/styles.css">
+
+  <script type="application/ld+json">
+  {"@context": "https://schema.org", "@type": "Article", "headline": "HubSpot Custom Code & Dedupe Workflows", "author": {"@type": "Organization", "name": "[BUSINESS NAME]"}}
+  </script>
+</head>
+<body>
+  <nav class="nav" role="navigation" aria-label="Main navigation">
+    <div class="nav-inner">
+      <a href="/" class="nav-logo">[BUSINESS<span>NAME</span>]</a>
+      <button class="nav-toggle" aria-label="Toggle navigation menu" aria-expanded="false"><span></span><span></span><span></span></button>
+      <div class="nav-links">
+        <a href="/services/" class="nav-link">Services</a>
+        <a href="/case-studies/" class="nav-link">Case Studies</a>
+        <a href="/resources/" class="nav-link">Resources</a>
+        <a href="/about.html" class="nav-link">About</a>
+        <a href="/contact.html" class="nav-link">Contact</a>
+        <div class="nav-cta"><a href="[CALENDLY]" class="btn btn-primary" target="_blank" rel="noopener">Book a Call</a></div>
+      </div>
+    </div>
+  </nav>
+
+  <main>
+    <article>
+      <header class="article-header">
+        <div class="container">
+          <nav class="breadcrumbs"><a href="/">Home</a><span>/</span><a href="/resources/">Resources</a><span>/</span><span>HubSpot Custom Code</span></nav>
+          <div class="article-meta"><span class="article-tag">HubSpot</span></div>
+          <h1 class="article-title">HubSpot Custom Code & Dedupe Workflows</h1>
+          <p class="article-excerpt">Operations Hub's custom code action unlocks powerful automation capabilities. Here's how to use it for deduplication, data cleanup, and advanced workflows.</p>
+        </div>
+      </header>
+
+      <div class="article-content">
+        <div class="container">
+          <div class="article-body">
+            <div class="toc">
+              <h4>Table of Contents</h4>
+              <ul>
+                <li><a href="#overview">What is Custom Code in HubSpot?</a></li>
+                <li><a href="#setup">Setting Up Custom Code Actions</a></li>
+                <li><a href="#dedupe">Deduplication Strategies</a></li>
+                <li><a href="#examples">Working Code Examples</a></li>
+                <li><a href="#best-practices">Best Practices</a></li>
+                <li><a href="#faq">FAQ</a></li>
+              </ul>
+            </div>
+
+            <h2 id="overview">What is Custom Code in HubSpot?</h2>
+            <p>HubSpot Operations Hub (Professional and Enterprise) includes a "Custom Code" workflow action. It lets you run JavaScript or Python code within workflows, opening up possibilities that standard workflow actions can't handle.</p>
+
+            <h3>What You Can Do</h3>
+            <ul>
+              <li>Complex data transformations</li>
+              <li>API calls to external systems</li>
+              <li>Advanced deduplication logic</li>
+              <li>Data validation and enrichment</li>
+              <li>Custom calculations and formatting</li>
+            </ul>
+
+            <h3>Limitations</h3>
+            <ul>
+              <li>20-second execution timeout</li>
+              <li>Limited to Node.js 16 or Python 3.9</li>
+              <li>Some npm packages not available</li>
+              <li>Requires Operations Hub Professional or Enterprise</li>
+            </ul>
+
+            <h2 id="setup">Setting Up Custom Code Actions</h2>
+
+            <h3>Basic Structure</h3>
+            <p>A custom code action receives input properties and must return output data:</p>
+            <pre><code>// JavaScript example
+exports.main = async (event, callback) => {
+  // Access input properties
+  const email = event.inputFields['email'];
+  const firstName = event.inputFields['firstname'];
+
+  // Your logic here
+  const result = processData(email, firstName);
+
+  // Return output
+  callback({
+    outputFields: {
+      processedEmail: result.email,
+      isValid: result.isValid
+    }
+  });
+};</code></pre>
+
+            <h3>Using the HubSpot API</h3>
+            <p>You can make API calls using the built-in hubspot client:</p>
+            <pre><code>const hubspot = require('@hubspot/api-client');
+
+exports.main = async (event, callback) => {
+  const hubspotClient = new hubspot.Client({
+    accessToken: process.env.HUBSPOT_ACCESS_TOKEN
+  });
+
+  // Search for contacts
+  const searchRequest = {
+    filterGroups: [{
+      filters: [{
+        propertyName: 'email',
+        operator: 'EQ',
+        value: event.inputFields['email']
+      }]
+    }]
+  };
+
+  const response = await hubspotClient.crm.contacts.searchApi.doSearch(searchRequest);
+
+  callback({
+    outputFields: {
+      matchCount: response.total
+    }
+  });
+};</code></pre>
+
+            <h2 id="dedupe">Deduplication Strategies</h2>
+
+            <h3>The Duplicate Problem</h3>
+            <p>Duplicates enter HubSpot from multiple sources: form submissions, imports, integrations, manual entry. They cause:</p>
+            <ul>
+              <li>Inaccurate reporting</li>
+              <li>Multiple sales reps contacting the same person</li>
+              <li>Inconsistent data across records</li>
+              <li>Wasted marketing spend</li>
+            </ul>
+
+            <h3>Deduplication Approaches</h3>
+
+            <h4>1. Prevention (Best)</h4>
+            <p>Stop duplicates before they're created:</p>
+            <pre><code>exports.main = async (event, callback) => {
+  const hubspot = require('@hubspot/api-client');
+  const client = new hubspot.Client({ accessToken: process.env.HUBSPOT_ACCESS_TOKEN });
+
+  const email = event.inputFields['email'].toLowerCase().trim();
+
+  // Check for existing contact
+  const search = await client.crm.contacts.searchApi.doSearch({
+    filterGroups: [{
+      filters: [{
+        propertyName: 'email',
+        operator: 'EQ',
+        value: email
+      }]
+    }]
+  });
+
+  if (search.total > 0) {
+    // Duplicate found - return existing contact ID
+    callback({
+      outputFields: {
+        isDuplicate: true,
+        existingContactId: search.results[0].id
+      }
+    });
+  } else {
+    callback({
+      outputFields: {
+        isDuplicate: false,
+        existingContactId: null
+      }
+    });
+  }
+};</code></pre>
+
+            <h4>2. Merge on Detection</h4>
+            <p>When a duplicate is detected, merge records automatically:</p>
+            <pre><code>exports.main = async (event, callback) => {
+  const hubspot = require('@hubspot/api-client');
+  const client = new hubspot.Client({ accessToken: process.env.HUBSPOT_ACCESS_TOKEN });
+
+  const primaryId = event.inputFields['primaryContactId'];
+  const duplicateId = event.inputFields['duplicateContactId'];
+
+  // Merge duplicate into primary (duplicate gets deleted)
+  await client.crm.contacts.publicObjectApi.merge({
+    primaryObjectId: primaryId,
+    objectIdToMerge: duplicateId
+  });
+
+  callback({
+    outputFields: {
+      mergeComplete: true,
+      survivingContactId: primaryId
+    }
+  });
+};</code></pre>
+
+            <h4>3. Fuzzy Matching</h4>
+            <p>For catching duplicates with slight variations:</p>
+            <pre><code>// Normalize and compare emails
+function normalizeEmail(email) {
+  if (!email) return '';
+  let normalized = email.toLowerCase().trim();
+
+  // Handle Gmail dot-insensitivity
+  if (normalized.includes('@gmail.com')) {
+    const [local, domain] = normalized.split('@');
+    normalized = local.replace(/\./g, '') + '@' + domain;
+  }
+
+  // Remove plus addressing
+  normalized = normalized.replace(/\+[^@]+/, '');
+
+  return normalized;
+}
+
+exports.main = async (event, callback) => {
+  const email = event.inputFields['email'];
+  const normalizedEmail = normalizeEmail(email);
+
+  // Search using normalized email
+  // ... rest of duplicate check logic
+};</code></pre>
+
+            <h2 id="examples">Working Code Examples</h2>
+
+            <h3>Phone Number Formatting</h3>
+            <pre><code>exports.main = async (event, callback) => {
+  let phone = event.inputFields['phone'] || '';
+
+  // Remove all non-digits
+  phone = phone.replace(/\D/g, '');
+
+  // Format as (XXX) XXX-XXXX for US numbers
+  if (phone.length === 10) {
+    phone = `(${phone.slice(0,3)}) ${phone.slice(3,6)}-${phone.slice(6)}`;
+  } else if (phone.length === 11 && phone[0] === '1') {
+    phone = `+1 (${phone.slice(1,4)}) ${phone.slice(4,7)}-${phone.slice(7)}`;
+  }
+
+  callback({
+    outputFields: {
+      formattedPhone: phone
+    }
+  });
+};</code></pre>
+
+            <h3>Company Domain Extraction</h3>
+            <pre><code>exports.main = async (event, callback) => {
+  const email = event.inputFields['email'] || '';
+
+  // Extract domain from email
+  const domain = email.split('@')[1] || '';
+
+  // Exclude common personal email domains
+  const personalDomains = ['gmail.com', 'yahoo.com', 'hotmail.com', 'outlook.com'];
+  const isBusinessEmail = !personalDomains.includes(domain.toLowerCase());
+
+  callback({
+    outputFields: {
+      emailDomain: domain,
+      isBusinessEmail: isBusinessEmail
+    }
+  });
+};</code></pre>
+
+            <h3>Lead Scoring Enhancement</h3>
+            <pre><code>exports.main = async (event, callback) => {
+  let score = 0;
+
+  // Company size scoring
+  const employees = parseInt(event.inputFields['numberofemployees']) || 0;
+  if (employees >= 1000) score += 20;
+  else if (employees >= 200) score += 15;
+  else if (employees >= 50) score += 10;
+
+  // Industry scoring
+  const targetIndustries = ['Technology', 'Financial Services', 'Healthcare'];
+  if (targetIndustries.includes(event.inputFields['industry'])) {
+    score += 15;
+  }
+
+  // Engagement scoring
+  if (event.inputFields['recent_conversion_event_name']) score += 10;
+  if (parseInt(event.inputFields['hs_email_open']) > 5) score += 5;
+
+  callback({
+    outputFields: {
+      customLeadScore: score,
+      scoreCategory: score >= 30 ? 'Hot' : score >= 15 ? 'Warm' : 'Cold'
+    }
+  });
+};</code></pre>
+
+            <h2 id="best-practices">Best Practices</h2>
+
+            <h3>Error Handling</h3>
+            <p>Always wrap API calls in try/catch:</p>
+            <pre><code>exports.main = async (event, callback) => {
+  try {
+    // Your logic here
+    const result = await riskyOperation();
+    callback({ outputFields: { success: true, data: result } });
+  } catch (error) {
+    console.error('Error:', error.message);
+    callback({ outputFields: { success: false, error: error.message } });
+  }
+};</code></pre>
+
+            <h3>Testing</h3>
+            <ul>
+              <li>Test with sample data before going live</li>
+              <li>Use workflow enrollment triggers that limit scope during testing</li>
+              <li>Check logs for errors after each run</li>
+            </ul>
+
+            <h3>Performance</h3>
+            <ul>
+              <li>Keep execution under 20 seconds</li>
+              <li>Minimize API calls (batch when possible)</li>
+              <li>Use simple logic when standard actions would work</li>
+            </ul>
+
+            <h2 id="faq">Frequently Asked Questions</h2>
+
+            <h3>Do I need Operations Hub for custom code?</h3>
+            <p>Yes, custom code actions require Operations Hub Professional or Enterprise. Without it, you'll need to use external automation tools like Zapier or n8n.</p>
+
+            <h3>Can I call external APIs?</h3>
+            <p>Yes, you can make HTTP requests to external APIs using the axios library (pre-installed). Just be mindful of the 20-second timeout.</p>
+
+            <h3>What happens if my code fails?</h3>
+            <p>If your code throws an error, the workflow action fails and the contact won't proceed down that branch. Use try/catch and return error information in output fields for graceful handling.</p>
+
+            <div class="card mt-12" style="background: var(--color-light-secondary); border: none;">
+              <h3>Need help with HubSpot automation?</h3>
+              <p class="text-light">I build custom HubSpot workflows including advanced deduplication and data cleanup. <a href="/contact.html">Get in touch</a> to discuss your project.</p>
+              <a href="[CALENDLY]" class="btn btn-primary" target="_blank" rel="noopener">Book a Free Call</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </article>
+  </main>
+
+  <footer class="footer">
+    <div class="container"><div class="footer-bottom"><p>&copy; 2024 [BUSINESS NAME]. All rights reserved.</p></div></div>
+  </footer>
+
+  <script src="/assets/js/main.js"></script>
+</body>
+</html>

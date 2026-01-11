@@ -1,0 +1,10 @@
+# Robots.txt for [YOURDOMAIN.com]
+
+User-agent: *
+Allow: /
+
+# Sitemap location
+Sitemap: https://[YOURDOMAIN.com]/sitemap.xml
+
+# Disallow admin/system paths (if any added later)
+# Disallow: /admin/

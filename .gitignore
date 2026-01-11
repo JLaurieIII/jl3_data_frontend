@@ -1,0 +1,32 @@
+# OS / Editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+*.code-workspace
+
+# Python / misc caches
+__pycache__/
+
+# Local environment / secrets
+.env
+*.env
+infra/aws_config.env
+
+# Cursor/IDE artifacts
+.cursor/
+
+# Terraform local state/artifacts (keep configs, ignore generated state)
+.terraform/
+**/.terraform/*
+terraform.tfstate
+terraform.tfstate.*
+*.tfstate
+*.tfstate.backup
+*.tfplan
+crash.log
+crash.*.log
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json

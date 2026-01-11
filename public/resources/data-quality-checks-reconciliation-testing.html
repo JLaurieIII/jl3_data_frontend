@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Data Quality Checks & Reconciliation Testing | [BUSINESS NAME]</title>
+  <meta name="description" content="How to catch data issues before stakeholders do. Practical frameworks for validating data accuracy, building reconciliation tests, and maintaining data quality.">
+
+  <meta property="og:type" content="article">
+  <meta property="og:title" content="Data Quality Checks & Reconciliation Testing">
+  <meta property="og:description" content="Practical frameworks for data validation and reconciliation testing.">
+  <meta property="og:url" content="https://[YOURDOMAIN.com]/resources/data-quality-checks-reconciliation-testing.html">
+
+  <link rel="canonical" href="https://[YOURDOMAIN.com]/resources/data-quality-checks-reconciliation-testing.html">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&family=Playfair+Display:wght@600;700&family=Source+Sans+3:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/css/styles.css">
+
+  <script type="application/ld+json">
+  {"@context": "https://schema.org", "@type": "Article", "headline": "Data Quality Checks & Reconciliation Testing", "author": {"@type": "Organization", "name": "[BUSINESS NAME]"}}
+  </script>
+</head>
+<body>
+  <nav class="nav" role="navigation" aria-label="Main navigation">
+    <div class="nav-inner">
+      <a href="/" class="nav-logo">[BUSINESS<span>NAME</span>]</a>
+      <button class="nav-toggle" aria-label="Toggle navigation menu" aria-expanded="false"><span></span><span></span><span></span></button>
+      <div class="nav-links">
+        <a href="/services/" class="nav-link">Services</a>
+        <a href="/case-studies/" class="nav-link">Case Studies</a>
+        <a href="/resources/" class="nav-link">Resources</a>
+        <a href="/about.html" class="nav-link">About</a>
+        <a href="/contact.html" class="nav-link">Contact</a>
+        <div class="nav-cta"><a href="[CALENDLY]" class="btn btn-primary" target="_blank" rel="noopener">Book a Call</a></div>
+      </div>
+    </div>
+  </nav>
+
+  <main>
+    <article>
+      <header class="article-header">
+        <div class="container">
+          <nav class="breadcrumbs"><a href="/">Home</a><span>/</span><a href="/resources/">Resources</a><span>/</span><span>Data Quality</span></nav>
+          <div class="article-meta"><span class="article-tag">Data Engineering</span></div>
+          <h1 class="article-title">Data Quality Checks & Reconciliation Testing</h1>
+          <p class="article-excerpt">Bad data destroys trust. Here's how to build systematic data quality checks that catch issues before your stakeholders do.</p>
+        </div>
+      </header>
+
+      <div class="article-content">
+        <div class="container">
+          <div class="article-body">
+            <div class="toc">
+              <h4>Table of Contents</h4>
+              <ul>
+                <li><a href="#why">Why Data Quality Matters</a></li>
+                <li><a href="#dimensions">Data Quality Dimensions</a></li>
+                <li><a href="#checks">Types of Checks</a></li>
+                <li><a href="#reconciliation">Reconciliation Testing</a></li>
+                <li><a href="#automation">Automating Quality Checks</a></li>
+                <li><a href="#faq">FAQ</a></li>
+              </ul>
+            </div>
+
+            <h2 id="why">Why Data Quality Matters</h2>
+            <p>Data quality problems compound. A small issue in your pipeline becomes a big problem in your dashboard, which becomes a trust problem with stakeholders.</p>
+
+            <h3>The Cost of Bad Data</h3>
+            <ul>
+              <li><strong>Bad decisions:</strong> Wrong data leads to wrong conclusions</li>
+              <li><strong>Lost time:</strong> Debugging data issues instead of building</li>
+              <li><strong>Lost trust:</strong> Once stakeholders don't trust data, they stop using it</li>
+              <li><strong>Downstream failures:</strong> ML models trained on bad data produce bad predictions</li>
+            </ul>
+
+            <h2 id="dimensions">Data Quality Dimensions</h2>
+            <p>Data quality isn't binary. There are multiple dimensions to consider:</p>
+
+            <h3>1. Completeness</h3>
+            <p>Are all expected records present? Are required fields populated?</p>
+            <ul>
+              <li>Row counts match expectations</li>
+              <li>Required fields are not null</li>
+              <li>Expected date ranges are covered</li>
+            </ul>
+
+            <h3>2. Accuracy</h3>
+            <p>Does the data correctly represent reality?</p>
+            <ul>
+              <li>Values are within expected ranges</li>
+              <li>Calculations are correct</li>
+              <li>Data matches source of truth</li>
+            </ul>
+
+            <h3>3. Consistency</h3>
+            <p>Is the data internally consistent and consistent across systems?</p>
+            <ul>
+              <li>No duplicate primary keys</li>
+              <li>Referential integrity maintained</li>
+              <li>Related tables agree</li>
+            </ul>
+
+            <h3>4. Timeliness</h3>
+            <p>Is the data fresh enough for its purpose?</p>
+            <ul>
+              <li>Data arrives within SLA</li>
+              <li>No unexpectedly old records</li>
+              <li>Timestamps are reasonable</li>
+            </ul>
+
+            <h3>5. Validity</h3>
+            <p>Does the data conform to expected formats and constraints?</p>
+            <ul>
+              <li>Emails are valid email format</li>
+              <li>Dates are parseable</li>
+              <li>Enums contain only allowed values</li>
+            </ul>
+
+            <h2 id="checks">Types of Checks</h2>
+
+            <h3>Schema Checks</h3>
+            <pre><code>-- Verify expected columns exist with correct types
+SELECT column_name, data_type
+FROM information_schema.columns
+WHERE table_name = 'orders'
+ORDER BY ordinal_position;</code></pre>
+
+            <h3>Null Checks</h3>
+            <pre><code>-- Check for unexpected nulls in required fields
+SELECT
+  COUNT(*) as total_rows,
+  COUNT(order_id) as orders_with_id,
+  COUNT(customer_id) as orders_with_customer,
+  COUNT(amount) as orders_with_amount
+FROM orders
+WHERE order_date = CURRENT_DATE - 1;</code></pre>
+
+            <h3>Uniqueness Checks</h3>
+            <pre><code>-- Find duplicate primary keys
+SELECT order_id, COUNT(*) as cnt
+FROM orders
+GROUP BY order_id
+HAVING COUNT(*) > 1;</code></pre>
+
+            <h3>Range Checks</h3>
+            <pre><code>-- Verify values are within expected ranges
+SELECT COUNT(*) as invalid_amounts
+FROM orders
+WHERE amount < 0 OR amount > 1000000;
+
+SELECT COUNT(*) as future_orders
+FROM orders
+WHERE order_date > CURRENT_DATE;</code></pre>
+
+            <h3>Referential Integrity</h3>
+            <pre><code>-- Find orphaned records
+SELECT o.order_id
+FROM orders o
+LEFT JOIN customers c ON o.customer_id = c.customer_id
+WHERE c.customer_id IS NULL;</code></pre>
+
+            <h3>Freshness Checks</h3>
+            <pre><code>-- Verify data is recent
+SELECT MAX(updated_at) as last_update,
+       CURRENT_TIMESTAMP - MAX(updated_at) as staleness
+FROM orders;
+
+-- Alert if more than 1 hour old
+-- (implement in monitoring layer)</code></pre>
+
+            <h2 id="reconciliation">Reconciliation Testing</h2>
+            <p>Reconciliation compares data between systems to verify accuracy. Essential for migrations, ETL pipelines, and any data movement.</p>
+
+            <h3>Row Count Reconciliation</h3>
+            <pre><code>-- Compare row counts between source and target
+WITH source_counts AS (
+  SELECT 'orders' as table_name, COUNT(*) as cnt FROM source.orders
+  UNION ALL
+  SELECT 'customers', COUNT(*) FROM source.customers
+),
+target_counts AS (
+  SELECT 'orders' as table_name, COUNT(*) as cnt FROM target.orders
+  UNION ALL
+  SELECT 'customers', COUNT(*) FROM target.customers
+)
+SELECT
+  s.table_name,
+  s.cnt as source_count,
+  t.cnt as target_count,
+  s.cnt - t.cnt as difference
+FROM source_counts s
+JOIN target_counts t ON s.table_name = t.table_name
+WHERE s.cnt != t.cnt;</code></pre>
+
+            <h3>Aggregate Reconciliation</h3>
+            <pre><code>-- Compare key metrics between source and target
+SELECT
+  'source' as system,
+  SUM(amount) as total_revenue,
+  COUNT(DISTINCT customer_id) as unique_customers,
+  AVG(amount) as avg_order_value
+FROM source.orders
+WHERE order_date = '2024-01-15'
+
+UNION ALL
+
+SELECT
+  'target' as system,
+  SUM(amount) as total_revenue,
+  COUNT(DISTINCT customer_id) as unique_customers,
+  AVG(amount) as avg_order_value
+FROM target.orders
+WHERE order_date = '2024-01-15';</code></pre>
+
+            <h3>Sample-Based Row Comparison</h3>
+            <pre><code># Python example for row-level comparison
+import pandas as pd
+
+def compare_samples(source_df, target_df, key_column, sample_size=1000):
+    # Get random sample of keys
+    sample_keys = source_df[key_column].sample(n=sample_size).tolist()
+
+    source_sample = source_df[source_df[key_column].isin(sample_keys)]
+    target_sample = target_df[target_df[key_column].isin(sample_keys)]
+
+    # Merge and compare
+    comparison = source_sample.merge(
+        target_sample,
+        on=key_column,
+        suffixes=('_source', '_target')
+    )
+
+    # Find differences
+    differences = []
+    for col in source_df.columns:
+        if col == key_column:
+            continue
+        source_col = f"{col}_source"
+        target_col = f"{col}_target"
+        mismatches = comparison[comparison[source_col] != comparison[target_col]]
+        if len(mismatches) > 0:
+            differences.append({
+                'column': col,
+                'mismatch_count': len(mismatches),
+                'examples': mismatches[[key_column, source_col, target_col]].head()
+            })
+
+    return differences</code></pre>
+
+            <h2 id="automation">Automating Quality Checks</h2>
+
+            <h3>Using dbt Tests</h3>
+            <pre><code># schema.yml
+version: 2
+
+models:
+  - name: orders
+    columns:
+      - name: order_id
+        tests:
+          - unique
+          - not_null
+      - name: customer_id
+        tests:
+          - not_null
+          - relationships:
+              to: ref('customers')
+              field: customer_id
+      - name: amount
+        tests:
+          - not_null
+          - dbt_utils.accepted_range:
+              min_value: 0
+              max_value: 1000000
+      - name: status
+        tests:
+          - accepted_values:
+              values: ['pending', 'completed', 'cancelled']</code></pre>
+
+            <h3>Using Great Expectations</h3>
+            <pre><code>import great_expectations as gx
+
+context = gx.get_context()
+
+# Define expectations
+expectation_suite = context.add_expectation_suite("orders_suite")
+
+expectation_suite.add_expectation(
+    gx.expectations.ExpectColumnValuesToNotBeNull(column="order_id")
+)
+expectation_suite.add_expectation(
+    gx.expectations.ExpectColumnValuesToBeBetween(
+        column="amount", min_value=0, max_value=1000000
+    )
+)
+expectation_suite.add_expectation(
+    gx.expectations.ExpectTableRowCountToBeBetween(
+        min_value=1000, max_value=1000000
+    )
+)
+
+# Validate data
+checkpoint = context.add_checkpoint(name="orders_checkpoint", ...)
+result = checkpoint.run()</code></pre>
+
+            <h3>Building a Quality Pipeline</h3>
+            <pre><code># Airflow example
+from airflow import DAG
+from airflow.operators.python import PythonOperator, BranchPythonOperator
+
+def run_quality_checks(**context):
+    results = {
+        'row_count': check_row_count(),
+        'null_check': check_nulls(),
+        'range_check': check_ranges(),
+        'reconciliation': run_reconciliation()
+    }
+
+    failures = [k for k, v in results.items() if not v['passed']]
+    context['ti'].xcom_push(key='failures', value=failures)
+    return failures
+
+def decide_next_step(**context):
+    failures = context['ti'].xcom_pull(key='failures')
+    if failures:
+        return 'alert_on_failure'
+    return 'continue_pipeline'
+
+with DAG('data_quality_pipeline', ...):
+    quality_checks = PythonOperator(
+        task_id='run_quality_checks',
+        python_callable=run_quality_checks
+    )
+
+    branch = BranchPythonOperator(
+        task_id='decide_next',
+        python_callable=decide_next_step
+    )
+
+    quality_checks >> branch</code></pre>
+
+            <h2 id="faq">Frequently Asked Questions</h2>
+
+            <h3>When should quality checks run?</h3>
+            <p>Run checks at multiple points: after extraction (validate source), after transformation (validate logic), and after loading (validate completeness). Critical checks should block the pipeline; others can alert and continue.</p>
+
+            <h3>How strict should checks be?</h3>
+            <p>It depends on the use case. Financial data needs strict, blocking checks. Marketing analytics might tolerate some issues with alerts. Define thresholds based on business impact.</p>
+
+            <h3>What about historical data issues?</h3>
+            <p>Don't just check today's data. Periodically audit historical data for drift. Build trend monitoring to catch gradual degradation.</p>
+
+            <div class="card mt-12" style="background: var(--color-light-secondary); border: none;">
+              <h3>Need help with data quality?</h3>
+              <p class="text-light">I build data pipelines with quality checks and reconciliation testing built in. <a href="/contact.html">Get in touch</a> to discuss your project.</p>
+              <a href="[CALENDLY]" class="btn btn-primary" target="_blank" rel="noopener">Book a Free Call</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </article>
+  </main>
+
+  <footer class="footer">
+    <div class="container"><div class="footer-bottom"><p>&copy; 2024 [BUSINESS NAME]. All rights reserved.</p></div></div>
+  </footer>
+
+  <script src="/assets/js/main.js"></script>
+</body>
+</html>

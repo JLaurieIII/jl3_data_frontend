@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>How to Build Reliable ETL Pipelines | [BUSINESS NAME]</title>
+  <meta name="description" content="Best practices for building ETL pipelines that don't break at 3am. Covers error handling, monitoring, idempotency, and data validation strategies.">
+
+  <meta property="og:type" content="article">
+  <meta property="og:title" content="How to Build Reliable ETL Pipelines">
+  <meta property="og:description" content="Best practices for ETL pipelines that don't break. Error handling, monitoring, and validation.">
+  <meta property="og:url" content="https://[YOURDOMAIN.com]/resources/how-to-build-reliable-etl-pipelines.html">
+
+  <link rel="canonical" href="https://[YOURDOMAIN.com]/resources/how-to-build-reliable-etl-pipelines.html">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&family=Playfair+Display:wght@600;700&family=Source+Sans+3:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/css/styles.css">
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": "How to Build Reliable ETL Pipelines",
+    "description": "Best practices for building ETL pipelines that don't break at 3am.",
+    "author": {"@type": "Organization", "name": "[BUSINESS NAME]"}
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "What makes an ETL pipeline reliable?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Reliable ETL pipelines are idempotent (can be rerun safely), have comprehensive error handling, include data validation checks, and have monitoring and alerting built in from day one."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Should I use ETL or ELT?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Modern data stacks typically use ELT (Extract, Load, Transform) because cloud warehouses can handle transformations efficiently. ETL is still useful when you need to filter or clean data before loading to reduce storage costs."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "How do I handle ETL pipeline failures?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Design pipelines to be idempotent so they can be safely rerun. Implement checkpointing for long-running jobs, use dead letter queues for bad records, and set up alerts that notify the right people immediately."
+        }
+      }
+    ]
+  }
+  </script>
+</head>
+<body>
+  <nav class="nav" role="navigation" aria-label="Main navigation">
+    <div class="nav-inner">
+      <a href="/" class="nav-logo">[BUSINESS<span>NAME</span>]</a>
+      <button class="nav-toggle" aria-label="Toggle navigation menu" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+      <div class="nav-links">
+        <a href="/services/" class="nav-link">Services</a>
+        <a href="/case-studies/" class="nav-link">Case Studies</a>
+        <a href="/resources/" class="nav-link">Resources</a>
+        <a href="/about.html" class="nav-link">About</a>
+        <a href="/contact.html" class="nav-link">Contact</a>
+        <div class="nav-cta">
+          <a href="[CALENDLY]" class="btn btn-primary" target="_blank" rel="noopener">Book a Call</a>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <main>
+    <article>
+      <header class="article-header">
+        <div class="container">
+          <nav class="breadcrumbs">
+            <a href="/">Home</a><span>/</span><a href="/resources/">Resources</a><span>/</span><span>ETL Pipelines</span>
+          </nav>
+          <div class="article-meta">
+            <span class="article-tag">Data Engineering</span>
+          </div>
+          <h1 class="article-title">How to Build Reliable ETL Pipelines</h1>
+          <p class="article-excerpt">Pipelines that run at 3am need to work without you. Here's how to build ETL systems with proper error handling, monitoring, and validation so you can sleep soundly.</p>
+        </div>
+      </header>
+
+      <div class="article-content">
+        <div class="container">
+          <div class="article-body">
+            <div class="toc">
+              <h4>Table of Contents</h4>
+              <ul>
+                <li><a href="#principles">Core Principles</a></li>
+                <li><a href="#idempotency">Idempotency</a></li>
+                <li><a href="#error-handling">Error Handling</a></li>
+                <li><a href="#validation">Data Validation</a></li>
+                <li><a href="#monitoring">Monitoring & Alerting</a></li>
+                <li><a href="#testing">Testing Strategies</a></li>
+                <li><a href="#faq">FAQ</a></li>
+              </ul>
+            </div>
+
+            <h2 id="principles">Core Principles of Reliable Pipelines</h2>
+            <p>Before diving into specifics, let's establish the principles that guide reliable pipeline design:</p>
+            <ul>
+              <li><strong>Fail fast, fail loud:</strong> Don't silently swallow errors. If something breaks, make noise immediately.</li>
+              <li><strong>Expect failure:</strong> Networks fail. APIs timeout. Disks fill up. Design for these scenarios.</li>
+              <li><strong>Be idempotent:</strong> Running the same job twice should produce the same result.</li>
+              <li><strong>Validate data:</strong> Check data quality at every stage, not just at the end.</li>
+              <li><strong>Log everything:</strong> When debugging at 3am, you'll thank yourself for comprehensive logging.</li>
+            </ul>
+
+            <h2 id="idempotency">Idempotency: The Foundation of Reliability</h2>
+            <p>An idempotent pipeline produces the same result whether you run it once or ten times. This is crucial because:</p>
+            <ul>
+              <li>You can safely retry failed jobs</li>
+              <li>Backfills don't corrupt data</li>
+              <li>Debugging is easier when you can rerun jobs</li>
+            </ul>
+
+            <h3>Strategies for Idempotency</h3>
+            <p><strong>Partition-based overwrite:</strong> Write to date-partitioned tables and overwrite the entire partition:</p>
+            <pre><code>-- Instead of INSERT, use INSERT OVERWRITE
+INSERT OVERWRITE TABLE orders PARTITION (order_date = '2024-01-15')
+SELECT * FROM staging_orders WHERE order_date = '2024-01-15';</code></pre>
+
+            <p><strong>Merge/Upsert:</strong> Use MERGE statements for slowly changing dimensions:</p>
+            <pre><code>MERGE INTO customers AS target
+USING staging_customers AS source
+ON target.customer_id = source.customer_id
+WHEN MATCHED THEN UPDATE SET ...
+WHEN NOT MATCHED THEN INSERT ...;</code></pre>
+
+            <p><strong>Delete-then-insert:</strong> For simpler cases, delete existing data first:</p>
+            <pre><code>DELETE FROM orders WHERE order_date = '2024-01-15';
+INSERT INTO orders SELECT * FROM staging WHERE order_date = '2024-01-15';</code></pre>
+
+            <h2 id="error-handling">Error Handling That Actually Works</h2>
+
+            <h3>Categorize Your Errors</h3>
+            <p>Not all errors are equal. Categorize them to handle appropriately:</p>
+            <ul>
+              <li><strong>Transient errors:</strong> Network timeouts, rate limits, temporary unavailability. Retry with exponential backoff.</li>
+              <li><strong>Data errors:</strong> Invalid records, schema mismatches. Log to dead letter queue, continue processing.</li>
+              <li><strong>Fatal errors:</strong> Configuration issues, permission problems. Fail immediately and alert.</li>
+            </ul>
+
+            <h3>Implement Retry Logic</h3>
+            <pre><code>import time
+from functools import wraps
+
+def retry_with_backoff(max_retries=3, base_delay=1):
+    def decorator(func):
+        @wraps(func)
+        def wrapper(*args, **kwargs):
+            for attempt in range(max_retries):
+                try:
+                    return func(*args, **kwargs)
+                except TransientError as e:
+                    if attempt == max_retries - 1:
+                        raise
+                    delay = base_delay * (2 ** attempt)
+                    time.sleep(delay)
+        return wrapper
+    return decorator</code></pre>
+
+            <h3>Dead Letter Queues</h3>
+            <p>Don't let bad records kill your pipeline. Route them to a dead letter queue for later investigation:</p>
+            <ul>
+              <li>Log the full record and error message</li>
+              <li>Include timestamp and job context</li>
+              <li>Alert if dead letter queue grows beyond threshold</li>
+              <li>Build tooling to replay records after fixing issues</li>
+            </ul>
+
+            <h2 id="validation">Data Validation at Every Stage</h2>
+            <p>Data quality issues compound. Catch them early.</p>
+
+            <h3>Source Validation</h3>
+            <p>Before processing, validate what you received:</p>
+            <ul>
+              <li>File exists and has expected size/row count</li>
+              <li>Schema matches expectations</li>
+              <li>Required fields are present</li>
+              <li>Date ranges are reasonable</li>
+            </ul>
+
+            <h3>Transform Validation</h3>
+            <p>After transformations, verify your logic:</p>
+            <ul>
+              <li>Row counts match expectations (input rows = output rows + filtered rows)</li>
+              <li>Aggregations are reasonable (totals, averages within expected ranges)</li>
+              <li>No unexpected NULLs introduced</li>
+              <li>Referential integrity maintained</li>
+            </ul>
+
+            <h3>Load Validation</h3>
+            <p>After loading, confirm data landed correctly:</p>
+            <ul>
+              <li>Row counts in target match source</li>
+              <li>Checksums match for critical columns</li>
+              <li>No duplicate primary keys</li>
+              <li>Freshness checks (latest timestamp is recent)</li>
+            </ul>
+
+            <h3>Use dbt Tests or Great Expectations</h3>
+            <p>Don't reinvent the wheel. Use established frameworks:</p>
+            <pre><code># dbt schema.yml
+models:
+  - name: orders
+    columns:
+      - name: order_id
+        tests:
+          - unique
+          - not_null
+      - name: amount
+        tests:
+          - not_null
+          - dbt_utils.accepted_range:
+              min_value: 0
+              max_value: 1000000</code></pre>
+
+            <h2 id="monitoring">Monitoring & Alerting</h2>
+            <p>A pipeline without monitoring is a pipeline waiting to fail silently.</p>
+
+            <h3>What to Monitor</h3>
+            <ul>
+              <li><strong>Job success/failure:</strong> Did the job complete?</li>
+              <li><strong>Duration:</strong> Is it taking longer than usual?</li>
+              <li><strong>Row counts:</strong> Did we process the expected volume?</li>
+              <li><strong>Data freshness:</strong> When was data last updated?</li>
+              <li><strong>Error rates:</strong> How many records went to dead letter queue?</li>
+            </ul>
+
+            <h3>Alerting Best Practices</h3>
+            <ul>
+              <li>Alert on actionable issues only (no alert fatigue)</li>
+              <li>Include context in alerts (job name, error message, runbook link)</li>
+              <li>Route to the right channel (Slack, PagerDuty, email)</li>
+              <li>Escalate if not acknowledged within threshold</li>
+            </ul>
+
+            <h3>Dashboards</h3>
+            <p>Build dashboards that show:</p>
+            <ul>
+              <li>Current status of all pipelines</li>
+              <li>Historical success rates</li>
+              <li>Data freshness per table</li>
+              <li>Processing latency trends</li>
+            </ul>
+
+            <h2 id="testing">Testing Strategies</h2>
+
+            <h3>Unit Tests</h3>
+            <p>Test individual transformation functions with known inputs and expected outputs.</p>
+
+            <h3>Integration Tests</h3>
+            <p>Test the full pipeline with sample data:</p>
+            <ul>
+              <li>Use a subset of production data (anonymized if needed)</li>
+              <li>Verify end-to-end data flow</li>
+              <li>Check that all validation passes</li>
+            </ul>
+
+            <h3>Data Quality Tests in Production</h3>
+            <p>Run validation queries after each production load:</p>
+            <ul>
+              <li>Fail the job if critical checks don't pass</li>
+              <li>Prevent downstream jobs from running on bad data</li>
+              <li>Alert immediately on failures</li>
+            </ul>
+
+            <h2 id="faq">Frequently Asked Questions</h2>
+
+            <h3>What makes an ETL pipeline reliable?</h3>
+            <p>Reliable ETL pipelines are idempotent (can be rerun safely), have comprehensive error handling, include data validation checks, and have monitoring and alerting built in from day one. They're designed to fail gracefully and recover automatically when possible.</p>
+
+            <h3>Should I use ETL or ELT?</h3>
+            <p>Modern data stacks typically use ELT (Extract, Load, Transform) because cloud warehouses like Snowflake and Databricks can handle transformations efficiently. ETL is still useful when you need to filter or clean data before loading to reduce storage costs, or when transformations require specialized processing.</p>
+
+            <h3>How do I handle ETL pipeline failures?</h3>
+            <p>Design pipelines to be idempotent so they can be safely rerun. Implement checkpointing for long-running jobs so you can resume from where you left off. Use dead letter queues for bad records so one bad row doesn't stop the entire job. Set up alerts that notify the right people immediately with enough context to diagnose the issue.</p>
+
+            <h3>What tools should I use for ETL?</h3>
+            <p>Popular choices include:</p>
+            <ul>
+              <li><strong>Orchestration:</strong> Airflow, Prefect, Dagster</li>
+              <li><strong>Transformation:</strong> dbt, Spark, SQL</li>
+              <li><strong>Validation:</strong> Great Expectations, dbt tests</li>
+              <li><strong>Monitoring:</strong> Datadog, Monte Carlo, custom dashboards</li>
+            </ul>
+
+            <div class="card mt-12" style="background: var(--color-light-secondary); border: none;">
+              <h3>Need help building reliable pipelines?</h3>
+              <p class="text-light">I build ETL systems with proper error handling, monitoring, and validation. <a href="/contact.html">Get in touch</a> to discuss your project.</p>
+              <a href="[CALENDLY]" class="btn btn-primary" target="_blank" rel="noopener">Book a Free Call</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </article>
+  </main>
+
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-bottom">
+        <p>&copy; 2024 [BUSINESS NAME]. All rights reserved.</p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="/assets/js/main.js"></script>
+</body>
+</html>
