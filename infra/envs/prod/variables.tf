@@ -46,7 +46,7 @@ variable "domain_name" {
     After terraform apply, update Namecheap nameservers with Route53 NS values.
   EOT
   type        = string
-  default     = "jameslaurieiii.com"
+  default     = "jamesjlaurieiii.com"
 
   validation {
     condition     = can(regex("^[a-z0-9][a-z0-9-]{0,61}[a-z0-9]\\.[a-z]{2,}$", var.domain_name))

@@ -38,7 +38,8 @@ terraform {
 # Region can be any valid AWS region; us-east-1 chosen for consistency
 # -----------------------------------------------------------------------------
 provider "aws" {
-  region = var.aws_region
+  region  = var.aws_region
+  profile = "terraform-admin"
 
   default_tags {
     tags = {
@@ -57,8 +58,9 @@ provider "aws" {
 # All ACM certificate resources must use: provider = aws.us_east_1
 # -----------------------------------------------------------------------------
 provider "aws" {
-  alias  = "us_east_1"
-  region = "us-east-1"
+  alias   = "us_east_1"
+  region  = "us-east-1"
+  profile = "terraform-admin"
 
   default_tags {
     tags = {
