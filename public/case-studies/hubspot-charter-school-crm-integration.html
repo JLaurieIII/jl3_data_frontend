@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HubSpot CRM Integration for Charter School Enrollment Analytics | Case Study</title>
+  <meta name="description" content="How a custom HubSpot API integration improved enrollment visibility for charter schools, reducing untouched leads by 22% and increasing application completion by 14%.">
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="article">
+  <meta property="og:title" content="HubSpot CRM Integration for Charter School Enrollment | Case Study">
+  <meta property="og:description" content="Building a HubSpot data integration that gave charter school leadership clear visibility into enrollment funnels and untouched leads.">
+  <meta property="og:url" content="https://jamesjlaurieiii.com/case-studies/hubspot-charter-school-crm-integration.html">
+  <meta property="og:image" content="https://jamesjlaurieiii.com/assets/img/hubspot_integration_flowchart.png">
+
+  <!-- Canonical -->
+  <link rel="canonical" href="https://jamesjlaurieiii.com/case-studies/hubspot-charter-school-crm-integration.html">
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&family=Playfair+Display:wght@600;700&family=Source+Sans+3:wght@400;500;600&display=swap" rel="stylesheet">
+
+  <!-- Styles -->
+  <link rel="stylesheet" href="/assets/css/styles.css">
+
+  <!-- Schema Markup -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": "HubSpot CRM Integration for Charter School Enrollment Analytics",
+    "description": "Case study on implementing a HubSpot API integration for charter school enrollment tracking and analytics.",
+    "author": {
+      "@type": "Person",
+      "name": "James J. Laurie III"
+    },
+    "publisher": {
+      "@type": "Organization",
+      "name": "James J. Laurie III Data Engineering Consulting",
+      "url": "https://jamesjlaurieiii.com"
+    },
+    "datePublished": "2024-01-15"
+  }
+  </script>
+</head>
+<body>
+  <nav class="nav" role="navigation" aria-label="Main navigation">
+    <div class="nav-inner">
+      <a href="/" class="nav-logo" aria-label="James J. Laurie III Data Engineering Consulting Home">JL3<span>Data</span></a>
+      <button class="nav-toggle" aria-label="Toggle navigation menu" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+      <div class="nav-links">
+        <a href="/services/" class="nav-link">Services</a>
+        <a href="/case-studies/" class="nav-link">Case Studies</a>
+        <a href="/resources/" class="nav-link">Resources</a>
+        <a href="/about.html" class="nav-link">About</a>
+        <a href="/contact.html" class="nav-link">Contact</a>
+        <div class="nav-cta">
+          <a href="https://calendly.com/jamesjlaurieiii/new-meeting" class="btn btn-primary" target="_blank" rel="noopener">Book a Call</a>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <main>
+    <!-- Header -->
+    <section class="page-header">
+      <div class="container">
+        <a href="/case-studies/" class="text-mono text-accent" style="font-size: var(--text-xs); text-decoration: none;">← BACK TO CASE STUDIES</a>
+        <span class="page-label mt-4">HubSpot CRM Integration</span>
+        <h1>Charter School Enrollment Analytics: HubSpot API Integration & Power BI Dashboards</h1>
+        <p>How a custom HubSpot data integration revealed hidden enrollment opportunities and improved lead follow-up across multiple charter schools.</p>
+      </div>
+    </section>
+
+    <!-- Results Overview -->
+    <section class="section" style="background: var(--color-dark); color: var(--color-text-inverse);">
+      <div class="container">
+        <h2 style="color: var(--color-light); text-align: center; margin-bottom: var(--space-12);">Results at a Glance</h2>
+        <div class="stats-grid" style="grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: var(--space-8);">
+          <div class="text-center">
+            <div class="stat-number" style="font-size: var(--text-4xl); color: var(--color-accent);">22%</div>
+            <div class="stat-label" style="color: var(--color-text-light);">Reduction in untouched leads</div>
+          </div>
+          <div class="text-center">
+            <div class="stat-number" style="font-size: var(--text-4xl); color: var(--color-accent);">18%</div>
+            <div class="stat-label" style="color: var(--color-text-light);">Faster time-to-first-contact</div>
+          </div>
+          <div class="text-center">
+            <div class="stat-number" style="font-size: var(--text-4xl); color: var(--color-accent);">14%</div>
+            <div class="stat-label" style="color: var(--color-text-light);">Increase in application completion</div>
+          </div>
+          <div class="text-center">
+            <div class="stat-number" style="font-size: var(--text-4xl); color: var(--color-accent);">6-9%</div>
+            <div class="stat-label" style="color: var(--color-text-light);">Estimated enrollment increase</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Business Context -->
+    <section class="section">
+      <div class="container">
+        <h2>The Business Challenge</h2>
+        <div class="grid grid-2" style="gap: var(--space-8); margin-top: var(--space-8);">
+          <div class="card">
+            <h3>What the Organization Was Using</h3>
+            <p class="text-light">The charter school organization relied on HubSpot CRM to manage their entire enrollment funnel:</p>
+            <ul class="service-list">
+              <li>Prospective student and parent leads</li>
+              <li>Application lifecycle stages</li>
+              <li>Enrollment decisions and confirmations</li>
+              <li>Communication tracking across schools</li>
+            </ul>
+          </div>
+          <div class="card">
+            <h3>What Was Missing</h3>
+            <p class="text-light">Despite having all their data in HubSpot, leadership lacked critical visibility:</p>
+            <ul class="service-list">
+              <li>Which leads were untouched or stalled</li>
+              <li>Where applicants were dropping off</li>
+              <li>Application-to-enrollment conversion rates</li>
+              <li>Performance comparisons across schools</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="card mt-8" style="background: var(--color-light-secondary); border: none;">
+          <h3>Why HubSpot Reporting Wasn't Enough</h3>
+          <p class="text-light mb-4">HubSpot's built-in reporting tools couldn't provide:</p>
+          <div class="grid grid-3" style="gap: var(--space-6);">
+            <div>
+              <h4 style="font-size: var(--text-base); margin-bottom: var(--space-2);">Multi-School Aggregation</h4>
+              <p class="text-light mb-0" style="font-size: var(--text-sm);">No easy way to compare performance across 10+ schools in one view</p>
+            </div>
+            <div>
+              <h4 style="font-size: var(--text-base); margin-bottom: var(--space-2);">Historical Trend Analysis</h4>
+              <p class="text-light mb-0" style="font-size: var(--text-sm);">Limited ability to analyze year-over-year enrollment patterns</p>
+            </div>
+            <div>
+              <h4 style="font-size: var(--text-base); margin-bottom: var(--space-2);">Custom Object Analytics</h4>
+              <p class="text-light mb-0" style="font-size: var(--text-sm);">HubSpot custom objects (applications, enrollments) weren't accessible in standard reports</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Technical Solution -->
+    <section class="section" style="background: var(--color-light-secondary);">
+      <div class="container">
+        <h2>The HubSpot Data Integration</h2>
+        <p class="text-light" style="max-width: 700px; margin: 0 auto var(--space-12) auto; text-align: center;">I built a custom HubSpot API integration that extracted, transformed, and loaded CRM data into an analytics-ready format.</p>
+
+        <div class="card" style="margin-bottom: var(--space-8);">
+          <img src="/assets/img/hubspot_integration_flowchart.png"
+               alt="HubSpot integration architecture showing bi-directional data flow between HubSpot CRM, ETL services, and internal analytics systems"
+               style="width: 100%; height: auto; border-radius: var(--radius-md);">
+          <p class="text-light text-center mt-4 mb-0" style="font-size: var(--text-sm);">
+            <em>Bi-directional HubSpot data integration ensuring CRM accuracy and analytics visibility across systems</em>
+          </p>
+        </div>
+
+        <h3>What Data Was Extracted</h3>
+        <div class="grid grid-2" style="gap: var(--space-8); margin-top: var(--space-6);">
+          <div class="card">
+            <h4>Core HubSpot Objects</h4>
+            <ul class="service-list">
+              <li><strong>Contacts:</strong> Students, parents, guardians</li>
+              <li><strong>Associations:</strong> Links between contacts and schools</li>
+              <li><strong>Lifecycle Stages:</strong> Lead, MQL, SQL, Application, Enrolled</li>
+              <li><strong>Engagement Data:</strong> Emails, calls, meetings</li>
+            </ul>
+          </div>
+          <div class="card">
+            <h4>Custom HubSpot Objects</h4>
+            <ul class="service-list">
+              <li><strong>Applications:</strong> Start date, completion status, school</li>
+              <li><strong>Enrollments:</strong> Decision status, enrollment date</li>
+              <li><strong>School Attributes:</strong> Location, capacity, program type</li>
+              <li><strong>Status Transitions:</strong> Timestamped lifecycle changes</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="card mt-8">
+          <h3>Technical Approach</h3>
+          <div class="grid grid-2" style="gap: var(--space-8);">
+            <div>
+              <h4>Incremental Data Ingestion</h4>
+              <p class="text-light">The integration ran daily to capture:</p>
+              <ul class="service-list">
+                <li>New and updated contacts</li>
+                <li>Lifecycle stage changes</li>
+                <li>Custom object modifications</li>
+                <li>Deleted or archived records</li>
+              </ul>
+              <p class="text-light mb-0">No manual CSV exports required — fully programmatic via HubSpot API.</p>
+            </div>
+            <div>
+              <h4>Data Validation & Quality</h4>
+              <p class="text-light">Built-in checks ensured reliability:</p>
+              <ul class="service-list">
+                <li>Schema drift detection</li>
+                <li>Record count reconciliation</li>
+                <li>Missing field alerts</li>
+                <li>Association integrity checks</li>
+              </ul>
+              <p class="text-light mb-0">Data issues were flagged before reaching dashboards.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Analytics & Dashboards -->
+    <section class="section">
+      <div class="container">
+        <h2>Analytics Enablement: Power BI Dashboards</h2>
+        <p class="text-light" style="max-width: 700px; margin: 0 auto var(--space-12) auto; text-align: center;">
+          With clean, analytics-ready data, the organization built Power BI dashboards that revealed what was actually happening in their enrollment funnel.
+        </p>
+
+        <div class="grid grid-2" style="gap: var(--space-8);">
+          <div class="card card-dark">
+            <h3 style="color: var(--color-light);">Enrollment Funnel Visibility</h3>
+            <p style="color: var(--color-text-light);">Track the complete journey from lead to enrolled student:</p>
+            <ul class="service-list" style="color: var(--color-text-light);">
+              <li><strong>Total leads by school</strong> — see which campuses need support</li>
+              <li><strong>Contacted vs untouched leads</strong> — identify gaps in follow-up</li>
+              <li><strong>Applications started vs completed</strong> — spot drop-off points</li>
+              <li><strong>Enrollments confirmed vs dropped</strong> — understand yield rates</li>
+            </ul>
+          </div>
+          <div class="card card-dark">
+            <h3 style="color: var(--color-light);">Marketing Performance Insights</h3>
+            <p style="color: var(--color-text-light);">Understand what's driving enrollment success:</p>
+            <ul class="service-list" style="color: var(--color-text-light);">
+              <li><strong>Lead sources by channel</strong> — ROI by marketing campaign</li>
+              <li><strong>Conversion rates by source</strong> — which campaigns convert best</li>
+              <li><strong>Time-to-contact metrics</strong> — are leads being followed up quickly?</li>
+              <li><strong>School-level comparisons</strong> — benchmark across locations</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="card mt-8" style="background: var(--color-light-secondary); border: none;">
+          <h3>The Critical Difference: Custom Object Reporting</h3>
+          <p class="text-light">These dashboards consumed <strong>HubSpot custom objects</strong> (applications, enrollments, school associations) — something that's <strong>not achievable with HubSpot's built-in reporting alone</strong>.</p>
+          <p class="text-light mb-0">By modeling this data in a warehouse, leadership could finally ask and answer questions like:</p>
+          <ul class="service-list mt-4">
+            <li>"Which school has the highest application-to-enrollment conversion rate?"</li>
+            <li>"How many applications started but never completed?"</li>
+            <li>"What's our average time from inquiry to enrollment decision?"</li>
+            <li>"Which lead sources produce the most enrolled students?"</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- Business Impact -->
+    <section class="section" style="background: var(--color-dark); color: var(--color-text-inverse);">
+      <div class="container">
+        <h2 style="color: var(--color-light);">Measured Business Impact</h2>
+        <p style="color: var(--color-text-light); max-width: 700px; margin: 0 auto var(--space-12) auto; text-align: center;">
+          Within the first academic cycle after dashboard rollout, the organization saw data-informed improvements across key metrics.
+        </p>
+
+        <div class="grid grid-3" style="gap: var(--space-8);">
+          <div class="card">
+            <div class="stat-number" style="color: var(--color-accent); margin-bottom: var(--space-4);">22%</div>
+            <h3>Reduction in Untouched Leads</h3>
+            <p class="text-light mb-0">Previously hidden leads were identified and reassigned to admissions counselors. What was invisible became actionable.</p>
+          </div>
+          <div class="card">
+            <div class="stat-number" style="color: var(--color-accent); margin-bottom: var(--space-4);">18%</div>
+            <h3>Faster Time-to-First-Contact</h3>
+            <p class="text-light mb-0">Average response time dropped from ~4.5 days to ~3.7 days. Leads received follow-up while still engaged.</p>
+          </div>
+          <div class="card">
+            <div class="stat-number" style="color: var(--color-accent); margin-bottom: var(--space-4);">14%</div>
+            <h3>Increase in Application Completion</h3>
+            <p class="text-light mb-0">Driven by better follow-up prioritization. More started applications actually got finished.</p>
+          </div>
+        </div>
+
+        <div class="card mt-8" style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);">
+          <h3 style="color: var(--color-light);">Estimated Enrollment Impact</h3>
+          <p style="color: var(--color-text-light);">Based on historical enrollment conversion rates and improved funnel metrics:</p>
+          <div class="grid grid-2" style="gap: var(--space-6); margin-top: var(--space-6);">
+            <div>
+              <div class="stat-number" style="color: var(--color-accent);">6-9%</div>
+              <p style="color: var(--color-text-light); margin-bottom: 0;">Estimated increase in enrolled students attributed to better lead visibility and follow-up</p>
+            </div>
+            <div>
+              <div class="stat-number" style="color: var(--color-accent);">25-35</div>
+              <p style="color: var(--color-text-light); margin-bottom: 0;">Additional enrollments for a school enrolling ~400 students annually</p>
+            </div>
+          </div>
+          <p style="color: var(--color-text-light); margin-top: var(--space-6); margin-bottom: 0; font-style: italic;">
+            "Improved operational efficiency and visibility translated into measurable enrollment gains."
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Executive Impact -->
+    <section class="section">
+      <div class="container">
+        <h2>What Leadership Gained</h2>
+        <div class="grid grid-2" style="gap: var(--space-8); margin-top: var(--space-8);">
+          <div class="card card-dark">
+            <h3 style="color: var(--color-light);">From Reactive to Proactive</h3>
+            <p style="color: var(--color-text-light);">Before the dashboards, leadership discovered problems <em>after</em> enrollment cycles ended.</p>
+            <p style="color: var(--color-text-light); margin-bottom: 0;">Now, they have:</p>
+            <ul class="service-list mt-4" style="color: var(--color-text-light);">
+              <li>Real-time enrollment funnel snapshots</li>
+              <li>Weekly performance comparisons across schools</li>
+              <li>Early warnings for underperforming campaigns</li>
+              <li>Data-driven decisions during enrollment season</li>
+            </ul>
+          </div>
+          <div class="card">
+            <h3>Visibility Without Overhead</h3>
+            <p class="text-light">The integration runs automatically with minimal maintenance:</p>
+            <ul class="service-list">
+              <li>Daily incremental updates</li>
+              <li>Automated data quality checks</li>
+              <li>Self-service dashboards for leadership</li>
+              <li>No manual exports or spreadsheets</li>
+            </ul>
+            <p class="text-light mb-0">Teams can focus on enrollment, not data wrangling.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Deliverables -->
+    <section class="section" style="background: var(--color-light-secondary);">
+      <div class="container">
+        <h2>What Was Delivered</h2>
+        <div class="grid grid-3" style="gap: var(--space-6); margin-top: var(--space-8);">
+          <div class="card">
+            <span class="text-mono text-accent" style="font-size: var(--text-xs);">01</span>
+            <h4 class="mt-2">HubSpot API Integration</h4>
+            <p class="text-light mb-0">Python-based ETL pipeline extracting contacts, custom objects, associations, and lifecycle events</p>
+          </div>
+          <div class="card">
+            <span class="text-mono text-accent" style="font-size: var(--text-xs);">02</span>
+            <h4 class="mt-2">Analytics Data Warehouse</h4>
+            <p class="text-light mb-0">Cleaned, modeled data optimized for enrollment funnel analysis and reporting</p>
+          </div>
+          <div class="card">
+            <span class="text-mono text-accent" style="font-size: var(--text-xs);">03</span>
+            <h4 class="mt-2">Data Quality Framework</h4>
+            <p class="text-light mb-0">Automated validation checks, reconciliation reports, and schema drift detection</p>
+          </div>
+          <div class="card">
+            <span class="text-mono text-accent" style="font-size: var(--text-xs);">04</span>
+            <h4 class="mt-2">Dashboard Foundation</h4>
+            <p class="text-light mb-0">Power BI data models enabling enrollment funnel, lead performance, and school comparison dashboards</p>
+          </div>
+          <div class="card">
+            <span class="text-mono text-accent" style="font-size: var(--text-xs);">05</span>
+            <h4 class="mt-2">Documentation & Handoff</h4>
+            <p class="text-light mb-0">Architecture diagrams, data dictionary, troubleshooting guide, and maintenance runbook</p>
+          </div>
+          <div class="card">
+            <span class="text-mono text-accent" style="font-size: var(--text-xs);">06</span>
+            <h4 class="mt-2">Training & Enablement</h4>
+            <p class="text-light mb-0">Dashboard training for leadership and data stewardship guidelines for admissions team</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Key Takeaways -->
+    <section class="section">
+      <div class="container">
+        <div class="card card-dark" style="max-width: 800px; margin: 0 auto;">
+          <h2 style="color: var(--color-light); text-align: center; margin-bottom: var(--space-8);">Key Takeaways</h2>
+          <div style="color: var(--color-text-light);">
+            <p style="font-size: var(--text-lg); margin-bottom: var(--space-6);">
+              <strong style="color: var(--color-light);">A well-built HubSpot integration doesn't just move data — it reveals lost opportunities, improves follow-up, and gives teams the clarity they need to act.</strong>
+            </p>
+            <ul class="service-list" style="font-size: var(--text-base);">
+              <li>HubSpot's built-in reporting has limits, especially for custom objects and multi-entity aggregation</li>
+              <li>API-based data extraction enables analytics that aren't possible in HubSpot alone</li>
+              <li>Incremental loading and validation are critical for trustworthy dashboards</li>
+              <li>Business impact comes from <em>visibility</em> — teams can't act on what they can't see</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- My Role -->
+    <section class="section" style="background: var(--color-light-secondary);">
+      <div class="container">
+        <div class="card" style="max-width: 700px; margin: 0 auto; text-align: center;">
+          <h3>My Role</h3>
+          <p class="text-light">I focused on <strong>data engineering, integration, and analytics enablement</strong>. Dashboard design and business usage were enabled by the data foundation I built.</p>
+          <p class="text-light mb-0">I did not claim ownership over marketing strategy or admissions policy — my job was to make the invisible visible, so teams could finally see and act on what was happening in their enrollment funnel.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- CTA -->
+    <section class="section">
+      <div class="container">
+        <div class="card card-dark" style="text-align: center; max-width: 700px; margin: 0 auto;">
+          <h2 style="color: var(--color-light);">Need Help with HubSpot Data Integration?</h2>
+          <p style="color: var(--color-text-light); margin-bottom: var(--space-8);">
+            Whether you're using HubSpot for sales, marketing, or operations — if you need better visibility into your CRM data, let's talk.
+          </p>
+          <div style="display: flex; gap: var(--space-4); justify-content: center; flex-wrap: wrap;">
+            <a href="https://calendly.com/jamesjlaurieiii/new-meeting" class="btn btn-primary" target="_blank" rel="noopener">
+              Schedule a Call
+              <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M5 12h14M12 5l7 7-7 7"></path>
+              </svg>
+            </a>
+            <a href="/contact.html" class="btn btn-outline" style="border-color: rgba(255,255,255,0.3); color: var(--color-light);">
+              Send a Message
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <a href="/" class="nav-logo">JL3<span>Data</span></a>
+          <p>Data engineering, automation, and data feed consulting. Reliable systems with validation, monitoring, and handoff documentation.</p>
+          <div class="footer-location">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+            US-based
+          </div>
+        </div>
+        <div>
+          <h5>Services</h5>
+          <ul class="footer-links">
+            <li><a href="/services/data-engineering.html">Data Engineering</a></li>
+            <li><a href="/services/automation.html">Automation</a></li>
+            <li><a href="/services/data-feeds.html">Data Feeds</a></li>
+          </ul>
+        </div>
+        <div>
+          <h5>Resources</h5>
+          <ul class="footer-links">
+            <li><a href="/case-studies/">Case Studies</a></li>
+            <li><a href="/resources/">Articles</a></li>
+            <li><a href="/about.html">About</a></li>
+            <li><a href="/contact.html">Contact</a></li>
+          </ul>
+        </div>
+        <div>
+          <h5>Legal</h5>
+          <ul class="footer-links">
+            <li><a href="/privacy.html">Privacy Policy</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>&copy; 2024 James J. Laurie III Data Engineering Consulting. All rights reserved.</p>
+        <div class="footer-social">
+          <a href="https://www.linkedin.com/in/jlaurie3/" aria-label="LinkedIn" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg></a>
+          <a href="https://github.com/JLaurieIII" aria-label="GitHub" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg></a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script src="/assets/js/main.js"></script>
+</body>
+</html>
