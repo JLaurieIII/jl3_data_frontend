@@ -8,6 +8,8 @@ set -e
 # Load configuration
 if [ -f "./infra/aws_config.env" ]; then
     source ./infra/aws_config.env
+    # Export AWS variables so they're available to aws cli commands
+    export AWS_PROFILE AWS_REGION
 else
     echo "Error: aws_config.env not found. Copy aws_config.example.env and fill in values."
     exit 1
@@ -66,7 +68,7 @@ if [ ! -z "${CLOUDFRONT_DISTRIBUTION_ID}" ]; then
     echo -e "${YELLOW}Invalidating CloudFront cache...${NC}"
     aws cloudfront create-invalidation \
         --distribution-id ${CLOUDFRONT_DISTRIBUTION_ID} \
-        --paths "/*.html" "/index.html" "/services/*" "/resources/*" "/case-studies/*"
+        --paths "/*"
     echo -e "${GREEN}CloudFront invalidation initiated.${NC}"
 else
     echo -e "${YELLOW}Skipping CloudFront invalidation (no distribution ID configured).${NC}"
