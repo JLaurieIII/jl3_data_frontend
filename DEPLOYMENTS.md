@@ -20,6 +20,34 @@ This file tracks all deployments to production (S3 + CloudFront).
 
 ## Production Deployments
 
+### 2026-01-23 15:16 - CloudFront Function for Directory Index
+- **Type**: Infrastructure Change
+- **Function ARN**: arn:aws:cloudfront::161231034279:function/jl3-directory-index-rewrite
+- **Changes**:
+  - Created CloudFront Function to rewrite directory URLs to index.html
+  - Function runs on viewer-request (before CloudFront cache check)
+  - Automatically rewrites `/services/` → `/services/index.html`
+  - Automatically rewrites `/case-studies/` → `/case-studies/index.html`
+  - Works for all future subdirectories
+  - Maintains secure OAC (Origin Access Control) setup
+  - Clean URLs without exposing index.html in browser
+- **Status**: Success
+- **Notes**: Professional long-term solution. No band-aids. Function runs at edge with no latency. Deployment takes 5-15 minutes to propagate globally.
+- **Files Added**:
+  - `infra/cloudfront-function-directory-index.js` (function code)
+
+### 2026-01-23 14:46 - Standardize CTA Buttons
+- **Commit**: 826d504
+- **CloudFront Invalidation ID**: I6VUZOJF3GBJB6IH6SM1DU9Z9G
+- **Deployed Files**: 24 HTML files updated
+- **Changes**:
+  - Replaced all "Book a 20-Min Call" with "Book a Call"
+  - Replaced all "Book a 15-min Call" with "Book a Call"
+  - Replaced all "Book a Free Call" with "Book a Call"
+  - Consistent nav bar CTA across all pages
+- **Status**: Success
+- **Notes**: Standardized all call-to-action buttons for consistency
+
 ### 2026-01-23 14:31 - Navigation Fix
 - **Commit**: ab45d50
 - **CloudFront Invalidation ID**: IE3FIE7OFLCFD0ESDJXGO6A069

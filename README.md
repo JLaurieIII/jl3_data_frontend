@@ -83,9 +83,14 @@ jl3_data_frontend/
 **Hosting:** AWS (S3 + CloudFront + Route53)
 - **S3 Bucket:** jamesjlaurieiii.com (static website hosting)
 - **CloudFront Distribution:** EONN2KZRY6530 (CDN + HTTPS)
+- **CloudFront Function:** jl3-directory-index-rewrite (handles directory URLs)
 - **Domain:** jamesjlaurieiii.com (Route53)
 - **Region:** us-east-1
 - **AWS Profile:** terraform-admin
+- **Security:** OAC (Origin Access Control) - bucket is private, CloudFront has secure access
+
+**Directory Index Handling:**
+The CloudFront Function automatically rewrites directory URLs (e.g., `/services/` → `/services/index.html`) while maintaining clean URLs and secure OAC setup. See `infra/cloudfront-function-directory-index.js`.
 
 See `infra/INFRASTRUCTURE.md` for detailed setup instructions.
 

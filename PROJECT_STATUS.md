@@ -68,6 +68,13 @@
 - ✅ Deployment automation
 - ✅ GitHub repository synced
 
+### Infrastructure
+- ✅ S3 static hosting
+- ✅ CloudFront CDN with HTTPS
+- ✅ Route53 DNS
+- ✅ OAC (Origin Access Control) - secure bucket access
+- ✅ CloudFront Function for directory index handling
+
 ## Pending Work
 
 ### Content
@@ -90,13 +97,31 @@
 
 ## Recent Changes
 
-**Last Deploy:** January 23, 2026 14:46 UTC
+**Infrastructure Update:** January 23, 2026 15:16 UTC
+- Created CloudFront Function for directory index handling
+- Function ARN: arn:aws:cloudfront::161231034279:function/jl3-directory-index-rewrite
+- Solves: `/services/` and `/case-studies/` now work (were 404)
+- Clean URLs maintained (no `/index.html` in browser)
+- Secure OAC setup preserved
+- Professional long-term solution (no band-aids)
+- Function code: `infra/cloudfront-function-directory-index.js`
+
+**Repository Cleanup:** January 23, 2026 ~15:00 UTC
+- Removed all backup HTML files (7 files)
+- Removed duplicate/temp files
+- Updated .gitignore with backup patterns
+- Completely rewrote README.md
+- Created DEVELOPMENT.md (comprehensive workflow guide)
+- Created PROJECT_STATUS.md (this file)
+- Net: -1,983 lines of cruft removed
+
+**Content Deploy:** January 23, 2026 14:46 UTC
 - Standardized all CTA buttons to "Book a Call"
-- Fixed navigation bar consistency
+- Fixed navigation bar consistency across all pages
 - CloudFront Invalidation: I6VUZOJF3GBJB6IH6SM1DU9Z9G
 
-**Previous Deploy:** January 23, 2026 14:31 UTC
-- Fixed broken Process navigation link
+**Bug Fix:** January 23, 2026 14:31 UTC
+- Fixed broken Process navigation link in index.html
 - CloudFront Invalidation: IE3FIE7OFLCFD0ESDJXGO6A069
 
 **Major Redesign:** January 23, 2026 ~14:15 UTC

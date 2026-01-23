@@ -1,7 +1,10 @@
 {
   "permissions": {
     "allow": [
-      "Bash(claude plugin --help:*)"
+      "Bash(claude plugin --help:*)",
+      "Bash(python infra/update-distribution-function.py:*)",
+      "Bash(python -c:*)",
+      "Bash(aws cloudfront:*)"
     ]
   }
 }
