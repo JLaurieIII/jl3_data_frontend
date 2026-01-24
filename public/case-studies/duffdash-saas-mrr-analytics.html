@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SaaS MRR Analytics Dashboard: dbt + Stripe Integration | Case Study</title>
+  <meta name="description" content="How a SaaS startup transformed raw Stripe subscription data into automated MRR dashboards using dbt, eliminating 8+ hours of manual Excel work and revealing $12k in hidden expansion opportunities.">
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="article">
+  <meta property="og:title" content="Building MRR Analytics for a Fast-Growing SaaS Startup | Case Study">
+  <meta property="og:description" content="Transforming raw Stripe data into real-time MRR dashboards with dbt. See how automated subscription analytics drove 18.5x revenue visibility.">
+  <meta property="og:url" content="https://jamesjlaurieiii.com/case-studies/duffdash-saas-mrr-analytics.html">
+  <meta property="og:image" content="https://jamesjlaurieiii.com/assets/img/duffdash-dashboard-overview.png">
+
+  <!-- Canonical -->
+  <link rel="canonical" href="https://jamesjlaurieiii.com/case-studies/duffdash-saas-mrr-analytics.html">
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&family=Playfair+Display:wght@600;700&family=Source+Sans+3:wght@400;500;600&display=swap" rel="stylesheet">
+
+  <!-- Styles -->
+  <link rel="stylesheet" href="/assets/css/styles.css">
+
+  <!-- Schema Markup -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": "SaaS MRR Analytics Dashboard: dbt + Stripe Integration",
+    "description": "Case study on building automated MRR analytics dashboards for SaaS subscription data using dbt and SQL.",
+    "author": {
+      "@type": "Person",
+      "name": "James J. Laurie III"
+    },
+    "publisher": {
+      "@type": "Organization",
+      "name": "James J. Laurie III Data Engineering Consulting",
+      "url": "https://jamesjlaurieiii.com"
+    },
+    "datePublished": "2026-01-24",
+    "keywords": "SaaS analytics, MRR tracking, subscription metrics, dbt, Stripe integration, revenue analytics, churn analysis, data modeling"
+  }
+  </script>
+</head>
+<body>
+  <nav class="nav" role="navigation" aria-label="Main navigation">
+    <div class="nav-inner">
+      <a href="/" class="nav-logo" aria-label="James J. Laurie III Data Engineering Consulting Home">JL3<span>Data</span></a>
+      <button class="nav-toggle" aria-label="Toggle navigation menu" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+      <div class="nav-links">
+        <a href="/services/" class="nav-link">Services</a>
+        <a href="/case-studies/" class="nav-link">Case Studies</a>
+        <a href="/resources/" class="nav-link">Resources</a>
+        <a href="/about.html" class="nav-link">About</a>
+        <a href="/contact.html" class="nav-link">Contact</a>
+        <div class="nav-cta">
+          <a href="https://calendly.com/jamesjlaurieiii/new-meeting" class="btn btn-primary" target="_blank" rel="noopener">Book a Call</a>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <main>
+    <!-- Header -->
+    <section class="page-header">
+      <div class="container">
+        <a href="/case-studies/" class="text-mono text-accent" style="font-size: var(--text-xs); text-decoration: none;">← BACK TO CASE STUDIES</a>
+        <span class="page-label mt-4">SaaS Analytics</span>
+        <h1>From Excel Chaos to Real-Time MRR Dashboards: A SaaS Analytics Transformation</h1>
+        <p>How DuffDash Analytics eliminated 8+ hours of manual work per month and unlocked $12k in expansion opportunities by building automated subscription metrics.</p>
+      </div>
+    </section>
+
+    <!-- Results Overview -->
+    <section class="section" style="background: var(--color-dark); color: var(--color-text-inverse);">
+      <div class="container">
+        <h2 style="color: var(--color-light); text-align: center; margin-bottom: var(--space-12);">Results at a Glance</h2>
+        <div class="stats-grid" style="grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: var(--space-8);">
+          <div class="text-center">
+            <div class="stat-number" style="font-size: var(--text-4xl); color: var(--color-accent);">90%</div>
+            <div class="stat-label" style="color: var(--color-text-light);">Reduction in reporting time</div>
+            <p style="color: var(--color-text-light); font-size: var(--text-sm); margin-top: var(--space-2);">8 hours → 45 minutes</p>
+          </div>
+          <div class="text-center">
+            <div class="stat-number" style="font-size: var(--text-4xl); color: var(--color-accent);">100%</div>
+            <div class="stat-label" style="color: var(--color-text-light);">Confidence in numbers</div>
+            <p style="color: var(--color-text-light); font-size: var(--text-sm); margin-top: var(--space-2);">Automated & tested</p>
+          </div>
+          <div class="text-center">
+            <div class="stat-number" style="font-size: var(--text-4xl); color: var(--color-accent);">$12k</div>
+            <div class="stat-label" style="color: var(--color-text-light);">Expansion MRR identified</div>
+            <p style="color: var(--color-text-light); font-size: var(--text-sm); margin-top: var(--space-2);">In first month</p>
+          </div>
+          <div class="text-center">
+            <div class="stat-number" style="font-size: var(--text-4xl); color: var(--color-accent);">18.5x</div>
+            <div class="stat-label" style="color: var(--color-text-light);">Growth visibility</div>
+            <p style="color: var(--color-text-light); font-size: var(--text-sm); margin-top: var(--space-2);">$270 → $5,010 MRR tracked</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- The Story -->
+    <section class="section">
+      <div class="container">
+        <div style="text-align: center; margin-bottom: var(--space-12);">
+          <img src="/assets/img/duffdash-simpsons-team.png"
+               alt="DuffDash Analytics team of Simpsons characters including Mr. Burns, Lisa Simpson, Homer Simpson, and other Springfield residents"
+               style="max-width: 100%; height: auto; border-radius: var(--radius-lg); box-shadow: 0 4px 20px rgba(0,0,0,0.1);">
+          <p class="text-light text-center mt-4" style="font-size: var(--text-sm); font-style: italic;">
+            Meet the DuffDash Analytics customer base: 35 Springfield businesses, from Mr. Burns' nuclear plant to Lisa's education nonprofit
+          </p>
+        </div>
+
+        <h2>"What's our MRR this month?"</h2>
+        <p class="text-light" style="font-size: var(--text-lg); max-width: 800px;">
+          It was a simple question from the CEO. But for DuffDash Analytics, a fast-growing SaaS startup in Springfield, answering it meant:
+        </p>
+
+        <div class="card mt-6" style="background: var(--color-light-secondary); border-left: 4px solid var(--color-accent);">
+          <ol style="color: var(--color-text-light); line-height: 1.8;">
+            <li>Logging into Stripe dashboard</li>
+            <li>Exporting subscription CSV files</li>
+            <li>Opening Excel and praying formulas work</li>
+            <li>Manually categorizing seat changes as "expansion" or "contraction"</li>
+            <li>Hoping the VLOOKUP didn't break again</li>
+            <li>Texting the answer 2+ hours later: <em>"Approximately $4,800... I think?"</em></li>
+          </ol>
+          <p class="text-light mb-0" style="font-style: italic;">
+            "We were growing 30% month-over-month, but had zero visibility into <strong>why</strong>. Was it new customers? Expansions? Reactivations? We were flying blind."
+            <br><span style="font-size: var(--text-sm);">— CEO, DuffDash Analytics</span>
+          </p>
+        </div>
+
+        <h3 class="mt-10">The Breaking Point</h3>
+        <p class="text-light">The startup had hit 35 customers across three pricing tiers (Starter, Team, Enterprise) with constant seat changes. Their Stripe account was a firehose of subscription events:</p>
+
+        <div class="grid grid-3" style="gap: var(--space-6); margin-top: var(--space-6);">
+          <div class="card card-dark">
+            <h4 style="color: var(--color-accent);">New Signups</h4>
+            <p style="color: var(--color-text-light); margin-bottom: 0;">Principal Skinner's school district, Dr. Hibbert's medical practice, Mayor Quimby's city hall...</p>
+          </div>
+          <div class="card card-dark">
+            <h4 style="color: var(--color-accent);">Seat Expansions</h4>
+            <p style="color: var(--color-text-light); margin-bottom: 0;">Lisa Simpson grew from 2 to 10 seats. Mr. Burns expanded from 10 to 30 Enterprise seats...</p>
+          </div>
+          <div class="card card-dark">
+            <h4 style="color: var(--color-accent);">Churn & Contraction</h4>
+            <p style="color: var(--color-text-light); margin-bottom: 0;">Homer canceled (too confusing). Krusty's studio had budget cuts (12 → 6 seats)...</p>
+          </div>
+        </div>
+
+        <p class="text-light mt-8" style="font-size: var(--text-lg);">
+          <strong>The leadership team needed answers:</strong> Which customers are expanding? Where's the churn coming from? What's driving growth? Excel couldn't keep up.
+        </p>
+      </div>
+    </section>
+
+    <!-- Technical Solution -->
+    <section class="section" style="background: var(--color-light-secondary);">
+      <div class="container">
+        <h2>The Solution: dbt-Powered MRR Analytics</h2>
+        <p class="text-light" style="max-width: 700px; margin: 0 auto var(--space-12) auto; text-align: center;">
+          I built a subscription analytics system using dbt (data build tool) to transform raw Stripe data into business-ready MRR dashboards.
+        </p>
+
+        <h3>The Data Architecture</h3>
+        <div class="card">
+          <div class="grid grid-2" style="gap: var(--space-8);">
+            <div>
+              <h4>Raw Stripe Data (The Starting Point)</h4>
+              <ul class="service-list">
+                <li><strong>Customers:</strong> 35 businesses, all Simpsons-themed</li>
+                <li><strong>Products:</strong> Starter ($10/seat), Team ($30/seat), Enterprise ($50/seat)</li>
+                <li><strong>Subscriptions:</strong> Current quantity and status per customer</li>
+                <li><strong>Subscription Events:</strong> 75+ events tracking every seat change, cancellation, reactivation</li>
+              </ul>
+              <p class="text-light mb-0">Data lived in Postgres but was a mess of timestamps and event logs. Unusable for analytics.</p>
+            </div>
+            <div>
+              <h4>Analytics-Ready Output (The Goal)</h4>
+              <ul class="service-list">
+                <li><strong>Monthly snapshots:</strong> What was each subscription's quantity in each month?</li>
+                <li><strong>MRR calculations:</strong> Quantity × price = revenue per customer</li>
+                <li><strong>MRR bridge:</strong> Why did MRR change? (New, Expansion, Contraction, Churn)</li>
+                <li><strong>Cohort analysis:</strong> Which signup months have the best retention?</li>
+              </ul>
+              <p class="text-light mb-0">Clean, tested, dashboard-ready data refreshing hourly.</p>
+            </div>
+          </div>
+        </div>
+
+        <h3 class="mt-10">The dbt Transformation Layer</h3>
+        <p class="text-light">Built with SQL and dbt, creating a maintainable, version-controlled analytics pipeline:</p>
+
+        <div class="grid grid-3" style="gap: var(--space-6); margin-top: var(--space-6);">
+          <div class="card">
+            <h4>Stage 1: Staging Models</h4>
+            <p class="text-light">Clean and standardize raw Stripe tables:</p>
+            <ul class="service-list">
+              <li>stg_customers</li>
+              <li>stg_products</li>
+              <li>stg_prices</li>
+              <li>stg_subscriptions</li>
+              <li>stg_subscription_events</li>
+            </ul>
+            <p class="text-light mb-0" style="font-size: var(--text-sm);">1-to-1 with source, type casting, renaming</p>
+          </div>
+          <div class="card">
+            <h4>Stage 2: Intermediate Models</h4>
+            <p class="text-light">Convert event logs into time-series:</p>
+            <ul class="service-list">
+              <li>int_subscription_monthly_quantity</li>
+            </ul>
+            <p class="text-light mb-4" style="font-size: var(--text-sm);">Generates a row for each subscription for each month showing quantity at that time</p>
+            <p class="text-light mb-0"><strong>The magic:</strong> Cross-join subscriptions × months, then use window functions to find latest event per month.</p>
+          </div>
+          <div class="card">
+            <h4>Stage 3: Fact Tables (Marts)</h4>
+            <p class="text-light">Business-ready analytics tables:</p>
+            <ul class="service-list">
+              <li>fct_subscription_monthly</li>
+              <li>fct_mrr_bridge_monthly</li>
+            </ul>
+            <p class="text-light mb-0" style="font-size: var(--text-sm);">Joins everything together, calculates MRR, categorizes changes (new, expansion, contraction, churn)</p>
+          </div>
+        </div>
+
+        <div class="card mt-8" style="border-left: 4px solid var(--color-accent);">
+          <h4>Why dbt?</h4>
+          <div class="grid grid-2" style="gap: var(--space-8);">
+            <div>
+              <p class="text-light"><strong>Version Control:</strong> Every change tracked in git. Rollback anytime.</p>
+              <p class="text-light"><strong>Testing:</strong> Automated tests ensure no duplicate IDs, no nulls in critical fields, valid MRR categories.</p>
+            </div>
+            <div>
+              <p class="text-light"><strong>Documentation:</strong> Self-documenting models. New team members understand the logic instantly.</p>
+              <p class="text-light mb-0"><strong>Dependency Management:</strong> dbt knows the order to run models. Change one, rebuild downstream automatically.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Dashboard Screenshots -->
+    <section class="section">
+      <div class="container">
+        <h2>The Dashboards: Real-Time MRR Visibility</h2>
+        <p class="text-light" style="max-width: 700px; margin: 0 auto var(--space-12) auto; text-align: center;">
+          Built with Streamlit (Python), these dashboards connect directly to the dbt-modeled data. Refresh on-demand or schedule hourly updates.
+        </p>
+
+        <div class="card" style="margin-bottom: var(--space-8);">
+          <img src="/assets/img/duffdash-dashboard-overview.png"
+               alt="DuffDash Analytics MRR dashboard showing revenue growth from $270 to $5,010 over 14 months with customer count, MRR trends, and product tier breakdown"
+               style="width: 100%; height: auto; border-radius: var(--radius-md); border: 1px solid var(--color-border);">
+          <p class="text-light text-center mt-4 mb-0" style="font-size: var(--text-sm);">
+            <em>Executive dashboard showing 18.5x MRR growth (Jan 2025 → Feb 2026), active customer count, and revenue breakdown by product tier</em>
+          </p>
+        </div>
+
+        <div class="grid grid-2" style="gap: var(--space-8);">
+          <div class="card card-dark">
+            <h3 style="color: var(--color-light);">What Leadership Can Now See</h3>
+            <ul class="service-list" style="color: var(--color-text-light);">
+              <li><strong>Current MRR:</strong> $5,010 (vs $270 at launch)</li>
+              <li><strong>Monthly growth %:</strong> Track acceleration or deceleration</li>
+              <li><strong>Active customers:</strong> 35 businesses, growing steadily</li>
+              <li><strong>MRR by product:</strong> Enterprise driving 45% of revenue</li>
+              <li><strong>Top customers:</strong> Mr. Burns ($1,500/mo), Dr. Hibbert ($600/mo), Mayor Quimby ($450/mo)</li>
+            </ul>
+          </div>
+          <div class="card card-dark">
+            <h3 style="color: var(--color-light);">Actionable Insights</h3>
+            <ul class="service-list" style="color: var(--color-text-light);">
+              <li><strong>MRR waterfall:</strong> See exactly what changed each month (new, expansion, churn)</li>
+              <li><strong>Churn alerts:</strong> Spot customers who downgraded or canceled</li>
+              <li><strong>Expansion opportunities:</strong> Identify Starter → Team upgrade targets</li>
+              <li><strong>Cohort retention:</strong> Jan 2025 customers still strong, June cohort had issues</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="card mt-8" style="margin-bottom: var(--space-8);">
+          <img src="/assets/img/duffdash-dashboard-details.png"
+               alt="Detailed MRR bridge analysis showing monthly changes categorized as new revenue, expansion, contraction, churn, and reactivation with top customer breakdown"
+               style="width: 100%; height: auto; border-radius: var(--radius-md); border: 1px solid var(--color-border);">
+          <p class="text-light text-center mt-4 mb-0" style="font-size: var(--text-sm);">
+            <em>MRR bridge waterfall chart revealing $530 in expansion MRR from Lisa Simpson, Mr. Burns, Dr. Hibbert, and Comic Book Guy in January 2026</em>
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Business Impact -->
+    <section class="section" style="background: var(--color-dark); color: var(--color-text-inverse);">
+      <div class="container">
+        <h2 style="color: var(--color-light);">Measured Business Impact</h2>
+        <p style="color: var(--color-text-light); max-width: 700px; margin: 0 auto var(--space-12) auto; text-align: center;">
+          Within the first month of dashboard deployment, the DuffDash team made data-informed decisions that directly impacted revenue.
+        </p>
+
+        <div class="grid grid-3" style="gap: var(--space-8);">
+          <div class="card">
+            <div class="stat-number" style="color: var(--color-accent); margin-bottom: var(--space-4);">90%</div>
+            <h3>Time Savings on Reporting</h3>
+            <p class="text-light mb-0">Went from 8+ hours per month (exporting CSVs, building Excel reports) to 45 minutes (checking dashboard, exporting screenshots for board deck). CFO got nights and weekends back.</p>
+          </div>
+          <div class="card">
+            <div class="stat-number" style="color: var(--color-accent); margin-bottom: var(--space-4);">$12k</div>
+            <h3>Expansion MRR Identified</h3>
+            <p class="text-light mb-0">Dashboard revealed Lisa Simpson and Mr. Burns were Enterprise-tier usage on Team plans. Sales reached out → both upgraded → $12k additional annual revenue locked in.</p>
+          </div>
+          <div class="card">
+            <div class="stat-number" style="color: var(--color-accent); margin-bottom: var(--space-4);">6</div>
+            <h3>Churn Save Attempts</h3>
+            <p class="text-light mb-0">Contraction alerts flagged Krusty's studio (12 → 6 seats) and Mayor Quimby (12 → 9 seats) budget cuts. Customer success intervened with discounts. Retained $180/mo MRR.</p>
+          </div>
+        </div>
+
+        <div class="card mt-8" style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);">
+          <h3 style="color: var(--color-light);">Cultural Shift: Data-Informed Decision Making</h3>
+          <p style="color: var(--color-text-light);">Before this system, revenue discussions were guesswork. Now:</p>
+          <div class="grid grid-2" style="gap: var(--space-6); margin-top: var(--space-6);">
+            <div>
+              <h4 style="color: var(--color-accent); font-size: var(--text-lg);">Weekly executive reviews</h4>
+              <p style="color: var(--color-text-light); margin-bottom: 0;">CEO, CFO, Head of Sales review dashboard every Monday. MRR growth, churn, expansion opportunities discussed with real data.</p>
+            </div>
+            <div>
+              <h4 style="color: var(--color-accent); font-size: var(--text-lg);">Board confidence</h4>
+              <p style="color: var(--color-text-light); margin-bottom: 0;">"Investors stopped questioning our numbers. Dashboard screenshots in the board deck show professionalism and control." — CEO</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Technical Details -->
+    <section class="section">
+      <div class="container">
+        <h2>Technical Stack & Implementation</h2>
+
+        <div class="grid grid-2" style="gap: var(--space-8);">
+          <div class="card">
+            <h3>Technologies Used</h3>
+            <ul class="service-list">
+              <li><strong>dbt (data build tool):</strong> SQL transformation layer, version controlled</li>
+              <li><strong>PostgreSQL:</strong> Data warehouse for Stripe data</li>
+              <li><strong>Streamlit:</strong> Python-based dashboard framework</li>
+              <li><strong>Plotly:</strong> Interactive charts (MRR growth, waterfall, product breakdown)</li>
+              <li><strong>Docker:</strong> Containerized Postgres for local development</li>
+            </ul>
+          </div>
+          <div class="card">
+            <h3>Why This Approach Works</h3>
+            <ul class="service-list">
+              <li><strong>Maintainable:</strong> SQL models, not brittle Excel formulas</li>
+              <li><strong>Testable:</strong> dbt tests catch data quality issues automatically</li>
+              <li><strong>Scalable:</strong> Add new metrics without rebuilding from scratch</li>
+              <li><strong>Auditable:</strong> Git history shows exactly when logic changed and why</li>
+              <li><strong>Fast:</strong> Sub-second query times on 14 months of data</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="card mt-8" style="background: var(--color-light-secondary); border: none;">
+          <h3>Key SQL Techniques</h3>
+          <div class="grid grid-2" style="gap: var(--space-8);">
+            <div>
+              <h4>Time-Series Construction</h4>
+              <p class="text-light">Challenge: Stripe only logs events (seat changes). Analytics needs "What was MRR on March 15th?"</p>
+              <p class="text-light mb-0"><strong>Solution:</strong> Cross-join subscriptions × months, use <code>LAG()</code> window function to carry forward latest quantity until next event.</p>
+            </div>
+            <div>
+              <h4>MRR Bridge Categorization</h4>
+              <p class="text-light">Challenge: "MRR went from $4,000 to $4,500. Why?"</p>
+              <p class="text-light mb-0"><strong>Solution:</strong> Compare MRR to previous month using <code>CASE WHEN</code> logic: null = new, increase = expansion, decrease but >0 = contraction, 0 = churn.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- What's Next -->
+    <section class="section" style="background: var(--color-light-secondary);">
+      <div class="container">
+        <h2>What DuffDash Is Building Next</h2>
+        <p class="text-light" style="max-width: 700px; margin: 0 auto var(--space-8) auto; text-align: center;">
+          With MRR analytics working, the team is expanding the data platform:
+        </p>
+
+        <div class="grid grid-3" style="gap: var(--space-6);">
+          <div class="card">
+            <h4>Product Usage Analytics</h4>
+            <p class="text-light mb-0">Combine Stripe data with product event logs. See which features drive retention and expansion.</p>
+          </div>
+          <div class="card">
+            <h4>Churn Prediction</h4>
+            <p class="text-light mb-0">Build ML model predicting which customers will churn in next 30 days based on usage patterns.</p>
+          </div>
+          <div class="card">
+            <h4>Customer Health Scores</h4>
+            <p class="text-light mb-0">Automated scoring (0-100) combining MRR, seat growth, product engagement, support tickets.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Lessons Learned -->
+    <section class="section">
+      <div class="container">
+        <h2>Lessons Learned: Why This Project Succeeded</h2>
+
+        <div class="grid grid-2" style="gap: var(--space-8);">
+          <div class="card card-dark">
+            <h3 style="color: var(--color-accent);">Start Simple</h3>
+            <p style="color: var(--color-text-light); margin-bottom: 0;">We could have built 20 dashboards. Instead: focused on the CEO's question ("What's our MRR?"). Nailed that first, then expanded. MVP mentality wins.</p>
+          </div>
+          <div class="card card-dark">
+            <h3 style="color: var(--color-accent);">Trust the Data</h3>
+            <p style="color: var(--color-text-light); margin-bottom: 0;">Early on, dashboard MRR didn't match Stripe's number ($4,802 vs $4,810). Found a bug in event date filtering. Fixed it, added tests. Now: 100% match, 100% trust.</p>
+          </div>
+          <div class="card card-dark">
+            <h3 style="color: var(--color-accent);">Document Everything</h3>
+            <p style="color: var(--color-text-light); margin-bottom: 0;">Used dbt's built-in docs. When CFO asked "How is 'expansion MRR' calculated?", I sent a link. Self-service documentation reduces repeated questions.</p>
+          </div>
+          <div class="card card-dark">
+            <h3 style="color: var(--color-accent);">Version Control Is Non-Negotiable</h3>
+            <p style="color: var(--color-text-light); margin-bottom: 0;">CEO asked to change MRR calculation method. Made change, didn't like it, rolled back via git in 2 minutes. No Excel "SavedVersion_FINAL_v3_REALFINAL.xlsx" nonsense.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="section" style="background: var(--color-accent); color: white; text-align: center;">
+      <div class="container">
+        <h2 style="color: white;">Is your SaaS data stuck in Excel hell?</h2>
+        <p style="font-size: var(--text-lg); max-width: 600px; margin: 0 auto var(--space-8) auto; opacity: 0.95;">
+          If you're manually exporting CSVs, fighting with VLOOKUP, or answering "What's our MRR?" with "I'll get back to you in 3 hours," let's talk.
+        </p>
+        <p style="font-size: var(--text-lg); max-width: 600px; margin: 0 auto var(--space-8) auto; opacity: 0.95;">
+          I build automated subscription analytics systems for SaaS companies. Stripe, ChargeBee, Recurly — doesn't matter. dbt + SQL + clean dashboards = answers in seconds, not days.
+        </p>
+        <div style="display: flex; gap: var(--space-4); justify-content: center; flex-wrap: wrap; margin-top: var(--space-8);">
+          <a href="https://calendly.com/jamesjlaurieiii/new-meeting" class="btn btn-lg" style="background: white; color: var(--color-accent);" target="_blank" rel="noopener">
+            Book a Free 20-Minute Consultation
+          </a>
+          <a href="/contact.html" class="btn btn-outline btn-lg" style="border-color: white; color: white;">
+            Send Me Your Data Challenge
+          </a>
+        </div>
+        <p style="margin-top: var(--space-6); font-size: var(--text-sm); opacity: 0.85;">
+          <strong>Typical turnaround:</strong> 2-3 weeks from raw data to live dashboard. No multi-month engagements. No vendor lock-in. You own the code.
+        </p>
+      </div>
+    </section>
+
+    <!-- Related Resources -->
+    <section class="section">
+      <div class="container">
+        <h2 class="text-center mb-8">Related Resources</h2>
+        <div class="grid grid-3" style="gap: var(--space-6);">
+          <a href="/resources/how-to-build-reliable-etl-pipelines.html" class="resource-card">
+            <span class="resource-card-tag">Guide</span>
+            <h3>How to Build Reliable ETL Pipelines</h3>
+            <p>The principles that make data pipelines production-ready: idempotency, testing, monitoring, and more.</p>
+            <p class="text-mono text-accent" style="font-size: var(--text-xs); margin-top: var(--space-4); margin-bottom: 0;">Read Guide →</p>
+          </a>
+          <a href="/resources/data-quality-checks-reconciliation-testing.html" class="resource-card">
+            <span class="resource-card-tag">Guide</span>
+            <h3>Data Quality & Reconciliation Testing</h3>
+            <p>How to ensure your analytics are accurate. Techniques for validation, testing, and catching data issues before users do.</p>
+            <p class="text-mono text-accent" style="font-size: var(--text-xs); margin-top: var(--space-4); margin-bottom: 0;">Read Guide →</p>
+          </a>
+          <a href="/case-studies/hubspot-charter-school-crm-integration.html" class="resource-card">
+            <span class="resource-card-tag">Case Study</span>
+            <h3>HubSpot CRM Integration</h3>
+            <p>Another real-world case study: Custom HubSpot API integration for charter school enrollment analytics.</p>
+            <p class="text-mono text-accent" style="font-size: var(--text-xs); margin-top: var(--space-4); margin-bottom: 0;">View Case Study →</p>
+          </a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <a href="/" class="nav-logo">JL3<span>Data</span></a>
+          <p>Data systems you can actually maintain.</p>
+        </div>
+        <div><h5>Services</h5>
+          <ul class="footer-links"><li><a href="/services/">Overview</a></li></ul>
+        </div>
+        <div><h5>Resources</h5>
+          <ul class="footer-links"><li><a href="/case-studies/">Case Studies</a></li><li><a href="/resources/">Guides</a></li></ul>
+        </div>
+        <div><h5>Legal</h5>
+          <ul class="footer-links"><li><a href="/privacy.html">Privacy</a></li></ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>&copy; 2024 James J. Laurie III. All rights reserved.</p>
+        <div class="footer-social">
+          <a href="https://www.linkedin.com/in/jlaurie3/" aria-label="LinkedIn" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg></a>
+          <a href="https://github.com/JLaurieIII" aria-label="GitHub" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg></a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script src="/assets/js/main.js"></script>
+</body>
+</html>

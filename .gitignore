@@ -50,3 +50,6 @@ override.tf
 override.tf.json
 *_override.tf
 *_override.tf.json
+
+# Case study development projects (local only - don't commit data/dbt builds)
+case-study-projects/
