@@ -59,7 +59,7 @@
         <a href="/about.html" class="nav-link">About</a>
         <a href="/contact.html" class="nav-link">Contact</a>
         <div class="nav-cta">
-          <a href="https://calendly.com/jamesjlaurieiii/new-meeting" class="btn btn-primary" target="_blank" rel="noopener">Book a Call</a>
+          <a href="https://calendly.com/jamesjlaurieiii/new-meeting" class="btn btn-primary" target="_blank" rel="noopener" data-analytics="cta" data-analytics-id="book-call-nav">Book a Call</a>
         </div>
       </div>
     </div>
@@ -448,10 +448,10 @@
           I build automated subscription analytics systems for SaaS companies. Stripe, ChargeBee, Recurly — doesn't matter. dbt + SQL + clean dashboards = answers in seconds, not days.
         </p>
         <div style="display: flex; gap: var(--space-4); justify-content: center; flex-wrap: wrap; margin-top: var(--space-8);">
-          <a href="https://calendly.com/jamesjlaurieiii/new-meeting" class="btn btn-lg" style="background: white; color: var(--color-accent);" target="_blank" rel="noopener">
+          <a href="https://calendly.com/jamesjlaurieiii/new-meeting" class="btn btn-lg" style="background: white; color: var(--color-accent);" target="_blank" rel="noopener" data-analytics="cta" data-analytics-id="book-consultation-bottom">
             Book a Free 20-Minute Consultation
           </a>
-          <a href="/contact.html" class="btn btn-outline btn-lg" style="border-color: white; color: white;">
+          <a href="/contact.html" class="btn btn-outline btn-lg" style="border-color: white; color: white;" data-analytics="cta" data-analytics-id="contact-bottom">
             Send Me Your Data Challenge
           </a>
         </div>
@@ -516,6 +516,8 @@
     </div>
   </footer>
 
+  <!-- Analytics Tracking (loads first) -->
+  <script src="/assets/js/analytics.js"></script>
   <script src="/assets/js/main.js"></script>
 </body>
 </html>
