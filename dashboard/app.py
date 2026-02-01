@@ -257,11 +257,11 @@ def main():
         if 'utm_source' in df.columns:
             source_counts = query_with_duckdb(df, """
                 SELECT
-                    COALESCE(utm_source, '(direct)') as source,
+                    COALESCE(CAST(utm_source AS VARCHAR), '(direct)') as source,
                     COUNT(*) as visits
                 FROM df
                 WHERE event_type = 'page_view'
-                GROUP BY utm_source
+                GROUP BY 1
                 ORDER BY visits DESC
             """)
             if not source_counts.empty:
@@ -274,11 +274,11 @@ def main():
         if 'utm_campaign' in df.columns:
             campaign_counts = query_with_duckdb(df, """
                 SELECT
-                    COALESCE(utm_campaign, '(none)') as campaign,
+                    COALESCE(CAST(utm_campaign AS VARCHAR), '(none)') as campaign,
                     COUNT(*) as visits
                 FROM df
                 WHERE event_type = 'page_view' AND utm_campaign IS NOT NULL
-                GROUP BY utm_campaign
+                GROUP BY 1
                 ORDER BY visits DESC
                 LIMIT 10
             """)
