@@ -129,3 +129,57 @@ output "deploy_commands" {
     check_dns    = "dig NS ${var.domain_name}"
   }
 }
+
+# =============================================================================
+# ANALYTICS PIPELINE OUTPUTS
+# =============================================================================
+
+# -----------------------------------------------------------------------------
+# Analytics API Endpoint
+# -----------------------------------------------------------------------------
+# The URL for sending analytics events from the browser.
+# Use this in analytics.js config.endpoint
+# -----------------------------------------------------------------------------
+output "analytics_api_endpoint" {
+  description = "Analytics API Gateway endpoint URL for browser events"
+  value       = "${aws_api_gateway_stage.v1.invoke_url}/events"
+}
+
+# -----------------------------------------------------------------------------
+# Analytics S3 Bucket
+# -----------------------------------------------------------------------------
+output "analytics_bucket_name" {
+  description = "S3 bucket for analytics data storage"
+  value       = aws_s3_bucket.analytics.id
+}
+
+output "analytics_bucket_arn" {
+  description = "S3 bucket ARN for analytics data"
+  value       = aws_s3_bucket.analytics.arn
+}
+
+# -----------------------------------------------------------------------------
+# Kinesis Stream (conditional)
+# -----------------------------------------------------------------------------
+output "kinesis_stream_enabled" {
+  description = "Whether Kinesis streaming is enabled"
+  value       = var.kinesis_stream_enabled
+}
+
+output "kinesis_stream_name" {
+  description = "Kinesis Data Stream name (empty if disabled)"
+  value       = var.kinesis_stream_enabled ? aws_kinesis_stream.analytics[0].name : ""
+}
+
+# -----------------------------------------------------------------------------
+# Analytics Lambda
+# -----------------------------------------------------------------------------
+output "analytics_lambda_name" {
+  description = "Analytics Lambda function name"
+  value       = aws_lambda_function.analytics_ingest.function_name
+}
+
+output "analytics_lambda_log_group" {
+  description = "CloudWatch log group for analytics Lambda"
+  value       = aws_cloudwatch_log_group.analytics_lambda.name
+}

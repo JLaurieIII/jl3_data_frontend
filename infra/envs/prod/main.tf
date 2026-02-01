@@ -320,6 +320,36 @@ resource "aws_cloudfront_origin_access_control" "static_site" {
 }
 
 # -----------------------------------------------------------------------------
+# CloudFront Function - URL Rewriter
+# -----------------------------------------------------------------------------
+# Rewrites directory requests to index.html
+# e.g., /case-studies/ → /case-studies/index.html
+resource "aws_cloudfront_function" "url_rewrite" {
+  name    = "${var.project_name}-url-rewrite"
+  runtime = "cloudfront-js-2.0"
+  comment = "Rewrite directory URLs to index.html"
+  publish = true
+
+  code = <<-EOF
+    function handler(event) {
+      var request = event.request;
+      var uri = request.uri;
+
+      // If URI ends with '/', append index.html
+      if (uri.endsWith('/')) {
+        request.uri += 'index.html';
+      }
+      // If URI doesn't have a file extension, assume it's a directory
+      else if (!uri.includes('.')) {
+        request.uri += '/index.html';
+      }
+
+      return request;
+    }
+  EOF
+}
+
+# -----------------------------------------------------------------------------
 # CloudFront Distribution
 # -----------------------------------------------------------------------------
 resource "aws_cloudfront_distribution" "static_site" {
@@ -377,6 +407,12 @@ resource "aws_cloudfront_distribution" "static_site" {
     min_ttl     = var.cloudfront_min_ttl
     default_ttl = var.cloudfront_default_ttl
     max_ttl     = var.cloudfront_max_ttl
+
+    # CloudFront Function for URL rewriting (directory → index.html)
+    function_association {
+      event_type   = "viewer-request"
+      function_arn = aws_cloudfront_function.url_rewrite.arn
+    }
   }
 
   # ---------------------------------------------------------------------------

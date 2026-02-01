@@ -72,12 +72,12 @@ var JL3Analytics = JL3Analytics || {};
 JL3Analytics.config = {
 
     // WHERE TO SEND THE DATA
-    // For now, this is null (empty) because we haven't built the API yet.
-    // Later, this will be something like:
-    // "https://api.jamesjlaurieiii.com/events"
+    // API Gateway endpoint for analytics ingestion.
+    // Set to null for local development (logs to console only).
     //
-    // When it's null, we'll just log to the browser console (for testing).
-    endpoint: null,
+    // IMPORTANT: After terraform apply, update this with the output:
+    // terraform output analytics_api_endpoint
+    endpoint: "https://jdsbdf3t47.execute-api.us-east-1.amazonaws.com/v1/events",
 
     // WHICH WEBSITE IS THIS?
     // You might track multiple sites someday. This label helps us know
@@ -88,8 +88,8 @@ JL3Analytics.config = {
     // When true: prints detailed messages to browser console (for testing)
     // When false: runs silently (for production)
     //
-    // We'll set this to true while building, then false when it's live.
-    debug: true,
+    // Set to false for production deployment.
+    debug: false,
 
     // SESSION TIMEOUT (in minutes)
     // If someone leaves your site and comes back 45 minutes later,
@@ -798,22 +798,36 @@ JL3Analytics.sendEvent = function(payload) {
     JL3Analytics.log("Event tracked:", payload);
 
     // If we have an API endpoint configured, send it there
-    if (JL3Analytics.config.endpoint) {
-        // We'll implement this in Phase 2 when we build the API!
-        // For now, this block won't run because endpoint is null
-
-        // PREVIEW: This is what it will look like:
-        //
-        // fetch(JL3Analytics.config.endpoint, {
-        //     method: 'POST',
-        //     headers: { 'Content-Type': 'application/json' },
-        //     body: JSON.stringify(payload)
-        // });
-        //
-        // fetch() is the modern way to make HTTP requests from JavaScript
-        // We'll add this in Phase 2!
-
-        JL3Analytics.log("Would send to API:", JL3Analytics.config.endpoint);
+    if (JL3Analytics.config.endpoint && !JL3Analytics.config.endpoint.includes("REPLACE_WITH")) {
+        // Send event to API Gateway using fetch with CORS
+        fetch(JL3Analytics.config.endpoint, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(payload),
+            // Use 'cors' mode for cross-origin requests
+            mode: "cors",
+            // Don't send cookies (we don't need them)
+            credentials: "omit",
+            // Use keepalive to ensure request completes even if page unloads
+            keepalive: true
+        })
+        .then(function(response) {
+            if (!response.ok) {
+                throw new Error("HTTP " + response.status);
+            }
+            return response.json();
+        })
+        .then(function(data) {
+            JL3Analytics.log("Event sent successfully:", data.ingest_id);
+        })
+        .catch(function(error) {
+            // Log error but don't disrupt user experience
+            JL3Analytics.log("Failed to send event:", error.message);
+        });
+    } else {
+        JL3Analytics.log("Endpoint not configured - event logged locally only");
     }
 
     // Also store in a local array (useful for debugging)
@@ -947,6 +961,26 @@ JL3Analytics.init = function() {
     // =============================
     // We'll listen for ALL clicks on the page, then decide what to track
     JL3Analytics.setupClickTracking();
+
+    // STEP 3: Set up scroll depth tracking
+    // ====================================
+    // Track 25%, 50%, 75%, 100% scroll milestones
+    JL3Analytics.setupScrollTracking();
+
+    // STEP 4: Set up time on page tracking
+    // ====================================
+    // Track 30s, 60s, 180s, 300s time intervals
+    JL3Analytics.setupTimeTracking();
+
+    // STEP 5: Set up form tracking
+    // ============================
+    // Track form starts and submissions
+    JL3Analytics.setupFormTracking();
+
+    // STEP 6: Set up exit intent tracking
+    // ===================================
+    // Track when user is about to leave
+    JL3Analytics.setupExitIntent();
 
     JL3Analytics.log("Analytics initialized!");
 };
@@ -1114,6 +1148,183 @@ JL3Analytics.isOutboundLink = function(url) {
 };
 
 // ============================================================================
+// PART 6B: ADVANCED TRACKING (Scroll, Time, Engagement)
+// ============================================================================
+//
+// These are additional behaviors people commonly track:
+// - Scroll depth (did they read the whole page?)
+// - Time on page (did they engage or bounce?)
+// - Form interactions (did they start filling out a form?)
+// - Video plays (if you have videos)
+
+// ----------------------------------------------------------------------------
+// SCROLL DEPTH TRACKING
+// ----------------------------------------------------------------------------
+// Track how far down the page someone scrolled.
+// This tells you if people are actually READING your content.
+//
+// We track milestones: 25%, 50%, 75%, 100%
+// Only fire each milestone ONCE per page.
+
+JL3Analytics.setupScrollTracking = function() {
+    var scrollMilestones = [25, 50, 75, 100];
+    var milestonesReached = {};  // Track which we've already fired
+
+    // Throttle function - don't fire on every pixel scrolled
+    var throttle = function(func, limit) {
+        var inThrottle;
+        return function() {
+            if (!inThrottle) {
+                func.apply(this, arguments);
+                inThrottle = true;
+                setTimeout(function() { inThrottle = false; }, limit);
+            }
+        };
+    };
+
+    var checkScroll = function() {
+        // Calculate scroll percentage
+        var scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+        var docHeight = document.documentElement.scrollHeight - window.innerHeight;
+
+        if (docHeight <= 0) return;  // Page too short to scroll
+
+        var scrollPercent = Math.round((scrollTop / docHeight) * 100);
+
+        // Check each milestone
+        for (var i = 0; i < scrollMilestones.length; i++) {
+            var milestone = scrollMilestones[i];
+
+            if (scrollPercent >= milestone && !milestonesReached[milestone]) {
+                milestonesReached[milestone] = true;
+
+                JL3Analytics.trackEvent("scroll_depth", {
+                    depth_percent: milestone,
+                    page_path: window.location.pathname
+                });
+
+                JL3Analytics.log("Scroll milestone reached:", milestone + "%");
+            }
+        }
+    };
+
+    // Listen for scroll events (throttled to every 250ms)
+    window.addEventListener("scroll", throttle(checkScroll, 250));
+};
+
+// ----------------------------------------------------------------------------
+// TIME ON PAGE TRACKING
+// ----------------------------------------------------------------------------
+// Track how long someone spends on the page.
+// Fire events at intervals: 30s, 60s, 180s, 300s
+//
+// This helps identify:
+// - Bounce rate (left before 30s = probably bounced)
+// - Engaged readers (stayed 3+ minutes)
+
+JL3Analytics.setupTimeTracking = function() {
+    var timeIntervals = [30, 60, 180, 300];  // seconds
+    var intervalsFired = {};
+    var startTime = Date.now();
+
+    var checkTime = function() {
+        var elapsed = Math.floor((Date.now() - startTime) / 1000);
+
+        for (var i = 0; i < timeIntervals.length; i++) {
+            var interval = timeIntervals[i];
+
+            if (elapsed >= interval && !intervalsFired[interval]) {
+                intervalsFired[interval] = true;
+
+                JL3Analytics.trackEvent("time_on_page", {
+                    seconds: interval,
+                    page_path: window.location.pathname
+                });
+
+                JL3Analytics.log("Time on page:", interval + " seconds");
+            }
+        }
+    };
+
+    // Check every 10 seconds
+    setInterval(checkTime, 10000);
+};
+
+// ----------------------------------------------------------------------------
+// FORM INTERACTION TRACKING
+// ----------------------------------------------------------------------------
+// Track when someone starts filling out a form.
+// This tells you about "form abandonment" - people who started but didn't finish.
+
+JL3Analytics.setupFormTracking = function() {
+    var formsTracked = {};
+
+    document.addEventListener("focus", function(event) {
+        var element = event.target;
+
+        // Check if it's a form input
+        if (element.tagName === "INPUT" || element.tagName === "TEXTAREA" || element.tagName === "SELECT") {
+            var form = element.closest("form");
+
+            if (form) {
+                var formId = form.id || form.getAttribute("name") || "unnamed-form";
+
+                // Only fire once per form per session
+                if (!formsTracked[formId]) {
+                    formsTracked[formId] = true;
+
+                    JL3Analytics.trackEvent("form_start", {
+                        form_id: formId,
+                        first_field: element.name || element.id || "unknown"
+                    });
+
+                    JL3Analytics.log("Form interaction started:", formId);
+                }
+            }
+        }
+    }, true);  // Use capture phase
+
+    // Track form submissions
+    document.addEventListener("submit", function(event) {
+        var form = event.target;
+        var formId = form.id || form.getAttribute("name") || "unnamed-form";
+
+        JL3Analytics.trackEvent("form_submit", {
+            form_id: formId
+        });
+
+        JL3Analytics.log("Form submitted:", formId);
+    });
+};
+
+// ----------------------------------------------------------------------------
+// EXIT INTENT TRACKING
+// ----------------------------------------------------------------------------
+// Track when someone is about to leave (mouse moves to close tab).
+// Useful for triggering popups or understanding exit behavior.
+
+JL3Analytics.setupExitIntent = function() {
+    var exitIntentFired = false;
+
+    document.addEventListener("mouseout", function(event) {
+        // Only fire once per session
+        if (exitIntentFired) return;
+
+        // Check if mouse left through the top of the page (toward browser chrome)
+        if (event.clientY < 10 && event.relatedTarget === null) {
+            exitIntentFired = true;
+
+            JL3Analytics.trackEvent("exit_intent", {
+                page_path: window.location.pathname,
+                time_on_page: Math.floor((Date.now() - window.performance.timing.navigationStart) / 1000)
+            });
+
+            JL3Analytics.log("Exit intent detected");
+        }
+    });
+};
+
+// ============================================================================
 // PART 7: START IT UP! (The Ignition)
 // ============================================================================
 //
@@ -1155,13 +1366,18 @@ if (document.readyState === "loading") {
 //    Type JL3Analytics.events to see all tracked events
 //
 // ============================================================================
-// WHAT'S NEXT? (Phase 2)
+// DEPLOYMENT NOTES
 // ============================================================================
 //
-// Right now, events just go to the console. In Phase 2, we'll:
-//   1. Build an API Gateway endpoint
-//   2. Set config.endpoint to that URL
-//   3. Events will flow: Browser → API → Kinesis → S3 → Snowflake
+// The analytics pipeline is now complete! Events flow:
+//   Browser → API Gateway → Lambda → Kinesis → Firehose → S3
 //
-// But first, let's test this locally and make sure it works!
+// After deploying infrastructure:
+//   1. Run: cd infra/envs/prod && terraform output analytics_api_endpoint
+//   2. Update config.endpoint above with the output URL
+//   3. Deploy static site: ./infra/deploy_s3_cloudfront.sh
+//
+// Cost control:
+//   - Full pipeline (~$12-15/mo): terraform apply -var="kinesis_stream_enabled=true"
+//   - Minimal (~$1/mo): terraform apply -var="kinesis_stream_enabled=false"
 
