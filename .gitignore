@@ -12,6 +12,9 @@ __pycache__/
 .env
 *.env
 infra/aws_config.env
+.streamlit/secrets.toml
+secrets.toml
+dashboard/.streamlit/secrets.toml
 
 # Cursor/IDE artifacts
 .cursor/

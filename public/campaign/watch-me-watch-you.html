@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Watch Me Watch You | James J. Laurie III</title>
+  <meta name="description" content="I'm tracking you right now. See exactly what data I'm collecting and how I'm using it. This entire page is a live demo.">
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Watch Me Watch You | Real-Time Analytics Demo">
+  <meta property="og:description" content="I'm tracking you right now. See exactly what data I'm collecting and how I'm using it. This entire page is a live demo.">
+  <meta property="og:url" content="https://jamesjlaurieiii.com/campaign/watch-me-watch-you.html">
+
+  <!-- Canonical -->
+  <link rel="canonical" href="https://jamesjlaurieiii.com/campaign/watch-me-watch-you.html">
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Playfair+Display:wght@600;700&family=Source+Sans+3:wght@400;500;600&display=swap" rel="stylesheet">
+
+  <!-- Styles -->
+  <link rel="stylesheet" href="/assets/css/styles.css">
+  <link rel="stylesheet" href="/assets/css/campaign.css">
+</head>
+<body class="campaign-page">
+  <!-- Scroll Progress Indicator -->
+  <div class="scroll-progress">
+    <div class="scroll-progress-bar" id="scrollProgress"></div>
+  </div>
+
+  <!-- Minimal Nav -->
+  <nav class="campaign-nav">
+    <a href="/" class="nav-logo">JL3<span>Data</span></a>
+    <a href="https://calendly.com/jamesjlaurieiii/new-meeting" class="btn btn-primary" target="_blank" rel="noopener">Book a Call</a>
+  </nav>
+
+  <main>
+    <!-- Hero Section -->
+    <section class="campaign-hero">
+      <div class="container">
+        <div class="hero-badge">
+          <span class="pulse-dot"></span>
+          <span id="heroSource">Loading...</span>
+        </div>
+        <h1 class="campaign-title">I'm watching you<br>watch this page.</h1>
+        <p class="campaign-subtitle">
+          And I'm going to show you exactly what I see.
+        </p>
+      </div>
+    </section>
+
+    <!-- Your Session Card -->
+    <section class="section">
+      <div class="container">
+        <div class="session-card">
+          <div class="session-header">
+            <h2>Your Session</h2>
+            <div class="live-badge">
+              <span class="pulse-dot"></span>
+              Live
+            </div>
+          </div>
+          <div class="session-grid">
+            <div class="session-stat">
+              <span class="stat-label">Session ID</span>
+              <span class="stat-value mono" id="sessionId">Loading...</span>
+            </div>
+            <div class="session-stat">
+              <span class="stat-label">Source</span>
+              <span class="stat-value" id="sessionSource">Direct</span>
+            </div>
+            <div class="session-stat">
+              <span class="stat-label">Time on Page</span>
+              <span class="stat-value mono" id="timeOnPage">0:00</span>
+            </div>
+            <div class="session-stat">
+              <span class="stat-label">Scroll Depth</span>
+              <span class="stat-value mono" id="scrollDepth">0%</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- The Hook -->
+    <section class="section section-dark">
+      <div class="container">
+        <h2 class="section-title">This entire page is a live demo of what I build.</h2>
+        <p class="section-subtitle">
+          Every scroll, every click, every second you spend here is captured, processed, and visualized in real-time. Here's the stack:
+        </p>
+        <div class="stack-flow">
+          <div class="stack-item">
+            <div class="stack-icon">JS</div>
+            <span>analytics.js</span>
+          </div>
+          <div class="stack-arrow">&rarr;</div>
+          <div class="stack-item">
+            <div class="stack-icon">API</div>
+            <span>API Gateway</span>
+          </div>
+          <div class="stack-arrow">&rarr;</div>
+          <div class="stack-item">
+            <div class="stack-icon">Lambda</div>
+            <span>Lambda</span>
+          </div>
+          <div class="stack-arrow">&rarr;</div>
+          <div class="stack-item">
+            <div class="stack-icon">K</div>
+            <span>Kinesis</span>
+          </div>
+          <div class="stack-arrow">&rarr;</div>
+          <div class="stack-item">
+            <div class="stack-icon">S3</div>
+            <span>S3</span>
+          </div>
+          <div class="stack-arrow">&rarr;</div>
+          <div class="stack-item">
+            <div class="stack-icon">DB</div>
+            <span>DuckDB</span>
+          </div>
+        </div>
+        <p class="stack-note">
+          Total cost: ~$12/month. No Tableau. No PowerBI. Just clean data.
+        </p>
+      </div>
+    </section>
+
+    <!-- Your Journey -->
+    <section class="section">
+      <div class="container">
+        <h2 class="section-title">Your Journey</h2>
+        <p class="section-subtitle">Watch your progress through my funnel in real-time.</p>
+
+        <div class="funnel-tracker">
+          <div class="funnel-step completed" id="step-pageview">
+            <div class="step-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="20 6 9 17 4 12"></polyline>
+              </svg>
+            </div>
+            <div class="step-content">
+              <h3>Landed on page</h3>
+              <p>You're here! That's step one.</p>
+            </div>
+          </div>
+
+          <div class="funnel-step" id="step-scroll25">
+            <div class="step-icon">
+              <span class="step-number">2</span>
+            </div>
+            <div class="step-content">
+              <h3>Scrolled past 25%</h3>
+              <p>You're showing interest...</p>
+            </div>
+          </div>
+
+          <div class="funnel-step" id="step-scroll50">
+            <div class="step-icon">
+              <span class="step-number">3</span>
+            </div>
+            <div class="step-content">
+              <h3>Scrolled past 50%</h3>
+              <p>Now you're engaged.</p>
+            </div>
+          </div>
+
+          <div class="funnel-step" id="step-cta">
+            <div class="step-icon">
+              <span class="step-number">4</span>
+            </div>
+            <div class="step-content">
+              <h3>Clicked something</h3>
+              <p>Any CTA counts.</p>
+            </div>
+          </div>
+
+          <div class="funnel-step" id="step-form">
+            <div class="step-icon">
+              <span class="step-number">5</span>
+            </div>
+            <div class="step-content">
+              <h3>Submitted the form</h3>
+              <p>You're a lead!</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Embedded Dashboard -->
+    <section class="section section-light">
+      <div class="container">
+        <h2 class="section-title">The Dashboard</h2>
+        <p class="section-subtitle">
+          Here's where your data ends up. Refresh to see yourself in the numbers.
+        </p>
+
+        <div class="dashboard-embed">
+          <iframe
+            id="dashboardFrame"
+            src="https://jl3-analytics.streamlit.app/?embed=true"
+            title="Live Analytics Dashboard"
+            frameborder="0"
+            allowfullscreen
+          ></iframe>
+          <div class="dashboard-overlay" id="dashboardOverlay">
+            <p>Dashboard loading...</p>
+            <p class="dashboard-note">Note: Data takes ~5 minutes to appear due to Firehose buffering.</p>
+          </div>
+        </div>
+
+        <div class="dashboard-actions">
+          <button class="btn btn-outline" onclick="document.getElementById('dashboardFrame').src = document.getElementById('dashboardFrame').src">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:18px;height:18px;margin-right:8px;">
+              <polyline points="23 4 23 10 17 10"></polyline>
+              <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path>
+            </svg>
+            Refresh Dashboard
+          </button>
+          <a href="https://jl3-analytics.streamlit.app/" class="btn btn-secondary" target="_blank" rel="noopener">
+            View Full Dashboard
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:16px;height:16px;margin-left:8px;">
+              <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+              <polyline points="15 3 21 3 21 9"></polyline>
+              <line x1="10" y1="14" x2="21" y2="3"></line>
+            </svg>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- The Pitch -->
+    <section class="section section-dark">
+      <div class="container">
+        <div class="pitch-content">
+          <h2>Want this for your business?</h2>
+          <p>
+            No Tableau licenses. No PowerBI headaches. Just clean, real-time data flowing exactly where you need it.
+          </p>
+          <ul class="pitch-list">
+            <li>Real-time event tracking tailored to your KPIs</li>
+            <li>Custom dashboards your team can actually use</li>
+            <li>Infrastructure that costs $12/month, not $12,000</li>
+            <li>Full handoff documentation so you're not dependent on me</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- Lead Capture Form -->
+    <section class="section" id="contact">
+      <div class="container">
+        <div class="form-card">
+          <h2>Let's build something</h2>
+          <p>Drop your email and I'll reach out to discuss your data challenges.</p>
+
+          <form id="leadForm" class="lead-form" action="https://formspree.io/f/YOUR_FORM_ID" method="POST">
+            <div class="form-row">
+              <div class="form-group">
+                <label for="name" class="form-label">Name</label>
+                <input type="text" id="name" name="name" class="form-input" required>
+              </div>
+              <div class="form-group">
+                <label for="email" class="form-label">Email</label>
+                <input type="email" id="email" name="email" class="form-input" required>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="company" class="form-label">Company (optional)</label>
+              <input type="text" id="company" name="company" class="form-input">
+            </div>
+
+            <div class="form-group">
+              <label for="challenge" class="form-label">What's your biggest data challenge?</label>
+              <textarea id="challenge" name="challenge" class="form-textarea" rows="3" placeholder="e.g., Our dashboards are always outdated, We're drowning in manual exports..."></textarea>
+            </div>
+
+            <!-- Honeypot -->
+            <div class="form-hp">
+              <input type="text" name="_gotcha" tabindex="-1" autocomplete="off">
+            </div>
+
+            <!-- Hidden fields for tracking -->
+            <input type="hidden" name="utm_source" id="form_utm_source">
+            <input type="hidden" name="utm_medium" id="form_utm_medium">
+            <input type="hidden" name="utm_campaign" id="form_utm_campaign">
+            <input type="hidden" name="session_id" id="form_session_id">
+
+            <button type="submit" class="btn btn-primary btn-lg btn-full" data-analytics="cta" data-analytics-id="lead-form-submit">
+              Let's Talk
+              <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M5 12h14M12 5l7 7-7 7"></path>
+              </svg>
+            </button>
+          </form>
+
+          <div id="formSuccess" class="form-success hidden">
+            <h3>Got it!</h3>
+            <p>I'll be in touch within 24 hours. In the meantime, feel free to <a href="https://calendly.com/jamesjlaurieiii/new-meeting" target="_blank">book a call directly</a>.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Tech Stack Flex -->
+    <section class="section section-light">
+      <div class="container">
+        <h2 class="section-title">The Tech Stack</h2>
+        <div class="tech-grid">
+          <div class="tech-item">
+            <h3>Frontend</h3>
+            <p>Vanilla JS analytics pixel</p>
+            <span class="tech-tag">~5KB gzipped</span>
+          </div>
+          <div class="tech-item">
+            <h3>Ingestion</h3>
+            <p>API Gateway + Lambda</p>
+            <span class="tech-tag">Serverless</span>
+          </div>
+          <div class="tech-item">
+            <h3>Streaming</h3>
+            <p>Kinesis Data Firehose</p>
+            <span class="tech-tag">Real-time</span>
+          </div>
+          <div class="tech-item">
+            <h3>Storage</h3>
+            <p>S3 with Hive partitioning</p>
+            <span class="tech-tag">$0.02/GB</span>
+          </div>
+          <div class="tech-item">
+            <h3>Query</h3>
+            <p>DuckDB</p>
+            <span class="tech-tag">Serverless SQL</span>
+          </div>
+          <div class="tech-item">
+            <h3>Visualization</h3>
+            <p>Streamlit</p>
+            <span class="tech-tag">Free hosting</span>
+          </div>
+        </div>
+        <div class="cost-banner">
+          <span class="cost-amount">~$12</span>
+          <span class="cost-label">per month total infrastructure cost</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Final CTA -->
+    <section class="section section-dark">
+      <div class="container text-center">
+        <h2>I can build this for you.</h2>
+        <p style="max-width: 500px; margin: 0 auto var(--space-8) auto; color: var(--color-text-light);">
+          Custom analytics infrastructure, tailored to your business, with full documentation and handoff.
+        </p>
+        <div class="hero-actions" style="justify-content: center;">
+          <a href="https://calendly.com/jamesjlaurieiii/new-meeting" class="btn btn-primary btn-lg" target="_blank" rel="noopener" data-analytics="cta" data-analytics-id="final-cta-book">
+            Book a 20-Min Call
+            <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M5 12h14M12 5l7 7-7 7"></path>
+            </svg>
+          </a>
+          <a href="#contact" class="btn btn-outline btn-lg" style="border-color: rgba(255,255,255,0.3); color: var(--color-light);" data-analytics="cta" data-analytics-id="final-cta-form">
+            Send a Message
+          </a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="campaign-footer">
+    <div class="container">
+      <div class="footer-content">
+        <a href="/" class="nav-logo">JL3<span>Data</span></a>
+        <p>&copy; 2024 James J. Laurie III. This page tracked <span id="totalEvents">0</span> of your events.</p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="/assets/js/main.js"></script>
+  <script src="/assets/js/analytics.js"></script>
+  <script src="/assets/js/campaign.js"></script>
+</body>
+</html>
