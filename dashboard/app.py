@@ -215,15 +215,21 @@ def load_data_from_s3():
         return pd.DataFrame()
 
 
-def query_with_duckdb(df, query):
+def query_with_duckdb(df, query, **kwargs):
     """
     Run a SQL query on a DataFrame using DuckDB.
+    Pass additional DataFrames as keyword arguments.
     """
     if df.empty:
         return pd.DataFrame()
 
     try:
         conn = duckdb.connect()
+        # Register the main dataframe
+        conn.register('df', df)
+        # Register any additional dataframes passed as kwargs
+        for name, dataframe in kwargs.items():
+            conn.register(name, dataframe)
         result = conn.execute(query).fetchdf()
         conn.close()
         return result
@@ -296,7 +302,7 @@ def get_source_comparison(df, campaign_filter=None):
                 COALESCE(CAST(utm_source AS VARCHAR), '(direct)') as source,
                 COUNT(*) as events_per_session,
                 MAX(CASE WHEN event_type = 'scroll_depth' THEN CAST(depth_percent AS INTEGER) ELSE 0 END) as max_scroll
-            FROM filtered_df
+            FROM df
             GROUP BY session_id, utm_source
         ),
         source_agg AS (
@@ -335,7 +341,7 @@ def get_scroll_depth_distribution(df, campaign_filter=None):
         SELECT
             CAST(depth_percent AS INTEGER) as depth,
             COUNT(DISTINCT session_id) as sessions
-        FROM scroll_df
+        FROM df
         GROUP BY depth_percent
         ORDER BY depth
     """
@@ -389,21 +395,23 @@ def main():
             st.rerun()
 
     # Date range filter
+    date_range = None
     if not df.empty and 'date' in df.columns:
-        min_date = df['date'].min()
-        max_date = df['date'].max()
+        # Drop NaN values before getting min/max
+        valid_dates = df['date'].dropna()
+        if len(valid_dates) > 0:
+            min_date = valid_dates.min()
+            max_date = valid_dates.max()
 
-        if not embed_mode:
-            date_range = st.sidebar.date_input(
-                "Date Range",
-                value=(min_date, max_date),
-                min_value=min_date,
-                max_value=max_date
-            )
-        else:
-            date_range = (min_date, max_date)
-    else:
-        date_range = None
+            if not embed_mode:
+                date_range = st.sidebar.date_input(
+                    "Date Range",
+                    value=(min_date, max_date),
+                    min_value=min_date,
+                    max_value=max_date
+                )
+            else:
+                date_range = (min_date, max_date)
 
     # Campaign filter
     campaigns = []
@@ -525,7 +533,7 @@ def main():
             plot_bgcolor="rgba(0,0,0,0)",
         )
 
-        st.plotly_chart(fig, use_container_width=True)
+        st.plotly_chart(fig, width="stretch")
 
         # Conversion rates
         if len(funnel_data) >= 2:
@@ -558,7 +566,7 @@ def main():
                     "avg_events": "Avg Events",
                     "avg_scroll_depth": "Avg Scroll %"
                 }),
-                use_container_width=True,
+                width="stretch",
                 hide_index=True
             )
         else:
@@ -584,7 +592,7 @@ def main():
                 plot_bgcolor="rgba(0,0,0,0)",
             )
             fig.update_xaxes(tickvals=[25, 50, 75, 100])
-            st.plotly_chart(fig, use_container_width=True)
+            st.plotly_chart(fig, width="stretch")
         else:
             st.info("No scroll data available")
 
@@ -602,7 +610,7 @@ def main():
             if 'event_type' in filtered_df.columns:
                 event_counts = query_with_duckdb(filtered_df, """
                     SELECT event_type, COUNT(*) as count
-                    FROM filtered_df
+                    FROM df
                     GROUP BY event_type
                     ORDER BY count DESC
                 """)
@@ -617,14 +625,14 @@ def main():
                         height=300,
                         margin=dict(l=20, r=20, t=20, b=20),
                     )
-                    st.plotly_chart(fig, use_container_width=True)
+                    st.plotly_chart(fig, width="stretch")
 
         with col2:
             st.markdown("**Top Pages**")
             if 'page_path' in filtered_df.columns:
                 page_counts = query_with_duckdb(filtered_df, """
                     SELECT page_path, COUNT(*) as views
-                    FROM filtered_df
+                    FROM df
                     WHERE event_type = 'page_view'
                     GROUP BY page_path
                     ORDER BY views DESC
@@ -645,7 +653,7 @@ def main():
                         xaxis_title="Views",
                         yaxis_title=""
                     )
-                    st.plotly_chart(fig, use_container_width=True)
+                    st.plotly_chart(fig, width="stretch")
 
         # ---------------------------------------------------------------------
         # TIMELINE
@@ -659,7 +667,7 @@ def main():
                     date,
                     COUNT(*) as events,
                     COUNT(DISTINCT session_id) as sessions
-                FROM filtered_df
+                FROM df
                 GROUP BY date
                 ORDER BY date
             """)
@@ -690,7 +698,7 @@ def main():
                     plot_bgcolor="rgba(0,0,0,0)",
                     legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1)
                 )
-                st.plotly_chart(fig, use_container_width=True)
+                st.plotly_chart(fig, width="stretch")
 
         # ---------------------------------------------------------------------
         # RAW DATA & SQL PLAYGROUND
@@ -708,7 +716,7 @@ def main():
 
             custom_query = st.text_area(
                 "Enter SQL query:",
-                value="SELECT event_type, COUNT(*) as count FROM filtered_df GROUP BY 1 ORDER BY 2 DESC",
+                value="SELECT event_type, COUNT(*) as count FROM df GROUP BY 1 ORDER BY 2 DESC",
                 height=100
             )
 
