@@ -1,0 +1,244 @@
+# ============================================================================
+# GITHUB ACTIONS WORKFLOW: Deploy to S3/CloudFront
+# ============================================================================
+#
+# WHAT IS THIS FILE?
+# ==================
+# This is a GitHub Actions "workflow" file. It tells GitHub:
+# "When certain things happen (like a push), run these commands."
+#
+# It's like setting up a robot assistant that watches your repo and
+# does tasks automatically when triggered.
+#
+# WHERE DOES THIS FILE LIVE?
+# ==========================
+# It MUST be in: .github/workflows/
+# GitHub specifically looks in this folder for workflow files.
+# The filename can be anything ending in .yml or .yaml
+#
+# WHAT IS YAML?
+# =============
+# YAML = "YAML Ain't Markup Language" (yes, it's a recursive joke)
+# It's a human-readable format for configuration. Key features:
+#   - Indentation matters (like Python)
+#   - Use spaces, NOT tabs
+#   - Key-value pairs: name: value
+#   - Lists start with dashes: - item
+#
+# ============================================================================
+
+# ----------------------------------------------------------------------------
+# NAME: What to call this workflow
+# ----------------------------------------------------------------------------
+# This appears in the GitHub Actions UI. Pick something descriptive.
+
+name: Deploy to S3/CloudFront
+
+# ----------------------------------------------------------------------------
+# ON: When should this workflow run?
+# ----------------------------------------------------------------------------
+#
+# This is the "trigger" - what event kicks off the workflow.
+#
+# Common triggers:
+#   push         - When code is pushed
+#   pull_request - When a PR is opened/updated
+#   schedule     - On a cron schedule (like daily)
+#   workflow_dispatch - Manual trigger (button in GitHub UI)
+#
+# We're using "push" with a filter: only when pushing to "main" branch.
+# This prevents deployments when pushing to feature branches.
+
+on:
+  push:
+    branches:
+      - main  # Only deploy when pushing to main branch
+    paths:
+      - 'public/**'  # Only deploy if files in public/ changed
+      - '.github/workflows/deploy.yml'  # Or if this workflow changed
+
+  # This adds a "Run workflow" button in GitHub UI for manual deploys
+  workflow_dispatch:
+
+# ----------------------------------------------------------------------------
+# JOBS: What work should be done?
+# ----------------------------------------------------------------------------
+#
+# A workflow contains one or more "jobs". Each job:
+#   - Runs on a fresh virtual machine
+#   - Can run in parallel with other jobs (or sequentially)
+#   - Contains "steps" (individual commands)
+#
+# Think of jobs like positions on a football team:
+#   - Job 1: "build" (like the offensive line - prepares things)
+#   - Job 2: "test" (like the quarterback - validates)
+#   - Job 3: "deploy" (like the receiver - delivers)
+#
+# For our simple static site, we only need one job.
+
+jobs:
+  deploy:
+    # ------------------------------------------------------------------
+    # NAME: Human-readable name for this job
+    # ------------------------------------------------------------------
+    name: Deploy Static Site
+
+    # ------------------------------------------------------------------
+    # RUNS-ON: What kind of machine should run this?
+    # ------------------------------------------------------------------
+    #
+    # GitHub provides free virtual machines:
+    #   - ubuntu-latest (Linux - most common, fastest)
+    #   - windows-latest (Windows)
+    #   - macos-latest (Mac - slowest, use sparingly)
+    #
+    # Linux is fastest and has the most available minutes.
+    # Your bash script works fine on Linux.
+
+    runs-on: ubuntu-latest
+
+    # ------------------------------------------------------------------
+    # STEPS: The actual commands to run (in order)
+    # ------------------------------------------------------------------
+    #
+    # Each step is either:
+    #   - uses: someone/action@version  (use a pre-built action)
+    #   - run: command                   (run a shell command)
+    #
+    # Steps run sequentially. If one fails, the workflow stops.
+
+    steps:
+      # ================================================================
+      # STEP 1: Check out the code
+      # ================================================================
+      #
+      # "actions/checkout" is an official GitHub action that:
+      #   - Clones your repository
+      #   - Checks out the commit that triggered the workflow
+      #
+      # Without this, the VM is empty - it doesn't have your code!
+      #
+      # ANALOGY: Before the game starts, you need to bring the
+      # equipment to the stadium. This step brings your code to the VM.
+
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # ================================================================
+      # STEP 2: Configure AWS credentials
+      # ================================================================
+      #
+      # "aws-actions/configure-aws-credentials" is an official AWS action.
+      # It sets up the AWS CLI with your credentials so subsequent
+      # commands can access S3 and CloudFront.
+      #
+      # THE SECRETS:
+      # ------------
+      # See those ${{ secrets.XXX }} references? Those are "secrets"
+      # stored in your GitHub repository settings. They're encrypted
+      # and never exposed in logs.
+      #
+      # You'll need to add these in GitHub:
+      #   Settings → Secrets and variables → Actions → New repository secret
+      #
+      # SECURITY: Never put actual keys in this file! Always use secrets.
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1
+
+      # ================================================================
+      # STEP 3: Deploy HTML files to S3
+      # ================================================================
+      #
+      # Now we run the actual deployment commands.
+      # This is the same logic as your deploy_s3_cloudfront.sh script,
+      # but written directly in the workflow.
+      #
+      # We could also just call the script:
+      #   run: bash ./infra/deploy_s3_cloudfront.sh
+      #
+      # But having it inline makes it easier to see what's happening
+      # and doesn't require the script to work without the env file.
+
+      - name: Deploy HTML files to S3
+        run: |
+          aws s3 sync ./public s3://jamesjlaurieiii.com \
+            --exclude "*" \
+            --include "*.html" \
+            --cache-control "max-age=300, must-revalidate" \
+            --content-type "text/html; charset=utf-8" \
+            --delete
+
+      # ================================================================
+      # STEP 4: Deploy CSS files to S3
+      # ================================================================
+
+      - name: Deploy CSS files to S3
+        run: |
+          aws s3 sync ./public/assets/css s3://jamesjlaurieiii.com/assets/css \
+            --cache-control "max-age=31536000, immutable" \
+            --content-type "text/css; charset=utf-8"
+
+      # ================================================================
+      # STEP 5: Deploy JS files to S3
+      # ================================================================
+
+      - name: Deploy JS files to S3
+        run: |
+          aws s3 sync ./public/assets/js s3://jamesjlaurieiii.com/assets/js \
+            --cache-control "max-age=31536000, immutable" \
+            --content-type "application/javascript; charset=utf-8"
+
+      # ================================================================
+      # STEP 6: Deploy images to S3
+      # ================================================================
+
+      - name: Deploy images to S3
+        run: |
+          aws s3 sync ./public/assets/img s3://jamesjlaurieiii.com/assets/img \
+            --cache-control "max-age=31536000, immutable"
+
+      # ================================================================
+      # STEP 7: Deploy sitemap and robots.txt
+      # ================================================================
+
+      - name: Deploy sitemap and robots.txt
+        run: |
+          aws s3 cp ./public/sitemap.xml s3://jamesjlaurieiii.com/sitemap.xml \
+            --cache-control "max-age=86400" \
+            --content-type "application/xml"
+
+          aws s3 cp ./public/robots.txt s3://jamesjlaurieiii.com/robots.txt \
+            --cache-control "max-age=86400" \
+            --content-type "text/plain"
+
+      # ================================================================
+      # STEP 8: Invalidate CloudFront cache
+      # ================================================================
+      #
+      # This is the "tell CloudFront to forget old files" step.
+      #
+      # We use another secret for the distribution ID. It's not
+      # super sensitive, but good practice to keep infrastructure
+      # IDs out of public code.
+
+      - name: Invalidate CloudFront cache
+        run: |
+          aws cloudfront create-invalidation \
+            --distribution-id ${{ secrets.CLOUDFRONT_DISTRIBUTION_ID }} \
+            --paths "/*"
+
+      # ================================================================
+      # STEP 9: Print success message
+      # ================================================================
+      #
+      # This is optional but nice - confirms everything worked.
+
+      - name: Deployment complete
+        run: |
+          echo "✅ Deployment successful!"
+          echo "🌐 Site: https://jamesjlaurieiii.com"

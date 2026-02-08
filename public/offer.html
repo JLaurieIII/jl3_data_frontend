@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Get Your Data Organized in 2 Weeks | James Laurie</title>
+  <meta name="description" content="Stop drowning in spreadsheets. I'll centralize your data, automate your reports, and build dashboards you'll actually use. Fixed price. 2 weeks.">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&family=Playfair+Display:wght@600;700&family=Source+Sans+3:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/css/styles.css">
+
+  <style>
+    .offer-page { background: var(--color-dark); min-height: 100vh; }
+    .offer-nav {
+      padding: var(--space-4) var(--space-6);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      max-width: var(--max-width);
+      margin: 0 auto;
+    }
+    .offer-nav .nav-logo { color: var(--color-light); }
+
+    .offer-hero {
+      padding: var(--space-16) var(--space-6);
+      text-align: center;
+      max-width: 800px;
+      margin: 0 auto;
+    }
+    .offer-hero h1 {
+      color: var(--color-light);
+      font-size: var(--text-4xl);
+      margin-bottom: var(--space-6);
+      line-height: 1.1;
+    }
+    .offer-hero h1 span { color: var(--color-accent); }
+    .offer-hero .subtitle {
+      font-size: var(--text-xl);
+      color: var(--color-text-light);
+      margin-bottom: var(--space-8);
+    }
+
+    .pain-points {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: var(--space-4);
+      text-align: left;
+      margin-bottom: var(--space-10);
+    }
+    @media (max-width: 640px) { .pain-points { grid-template-columns: 1fr; } }
+
+    .pain-point {
+      display: flex;
+      align-items: flex-start;
+      gap: var(--space-3);
+      color: var(--color-light);
+      font-size: var(--text-base);
+    }
+    .pain-point .icon {
+      color: var(--color-error);
+      font-size: var(--text-xl);
+      line-height: 1;
+    }
+
+    .offer-box {
+      background: var(--color-dark-secondary);
+      border: 2px solid var(--color-accent);
+      border-radius: var(--radius-lg);
+      padding: var(--space-10);
+      margin: var(--space-12) auto;
+      max-width: 600px;
+    }
+    .offer-box h2 {
+      color: var(--color-light);
+      font-size: var(--text-2xl);
+      margin-bottom: var(--space-2);
+    }
+    .offer-box .price {
+      font-family: var(--font-display);
+      font-size: var(--text-4xl);
+      color: var(--color-accent);
+      margin-bottom: var(--space-6);
+    }
+    .offer-box .price span {
+      font-size: var(--text-lg);
+      color: var(--color-text-light);
+    }
+
+    .offer-includes {
+      text-align: left;
+      margin-bottom: var(--space-8);
+    }
+    .offer-includes h3 {
+      color: var(--color-light);
+      font-size: var(--text-lg);
+      margin-bottom: var(--space-4);
+      font-family: var(--font-body);
+    }
+    .offer-includes li {
+      display: flex;
+      align-items: flex-start;
+      gap: var(--space-3);
+      color: var(--color-text-light);
+      margin-bottom: var(--space-3);
+    }
+    .offer-includes .check {
+      color: var(--color-success);
+      font-weight: bold;
+    }
+
+    .urgency {
+      background: rgba(245, 158, 11, 0.1);
+      border: 1px solid var(--color-warning);
+      border-radius: var(--radius-md);
+      padding: var(--space-4);
+      margin-bottom: var(--space-6);
+      color: var(--color-warning);
+      font-size: var(--text-sm);
+    }
+
+    .who-section {
+      padding: var(--space-12) var(--space-6);
+      background: var(--color-dark-secondary);
+    }
+    .who-section .container { max-width: 800px; margin: 0 auto; }
+    .who-section h2 {
+      color: var(--color-light);
+      text-align: center;
+      margin-bottom: var(--space-8);
+    }
+    .who-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: var(--space-6);
+    }
+    @media (max-width: 640px) { .who-grid { grid-template-columns: 1fr; } }
+    .who-item {
+      background: var(--color-dark);
+      padding: var(--space-6);
+      border-radius: var(--radius-md);
+    }
+    .who-item h3 {
+      color: var(--color-accent);
+      font-size: var(--text-lg);
+      font-family: var(--font-body);
+      margin-bottom: var(--space-2);
+    }
+    .who-item p {
+      color: var(--color-text-light);
+      font-size: var(--text-sm);
+      margin: 0;
+    }
+
+    .how-section {
+      padding: var(--space-12) var(--space-6);
+      max-width: 800px;
+      margin: 0 auto;
+    }
+    .how-section h2 {
+      color: var(--color-light);
+      text-align: center;
+      margin-bottom: var(--space-8);
+    }
+    .timeline {
+      position: relative;
+      padding-left: var(--space-8);
+    }
+    .timeline::before {
+      content: '';
+      position: absolute;
+      left: 12px;
+      top: 0;
+      bottom: 0;
+      width: 2px;
+      background: var(--color-accent);
+    }
+    .timeline-item {
+      position: relative;
+      margin-bottom: var(--space-6);
+    }
+    .timeline-item::before {
+      content: '';
+      position: absolute;
+      left: calc(-1 * var(--space-8) + 6px);
+      top: 6px;
+      width: 14px;
+      height: 14px;
+      background: var(--color-accent);
+      border-radius: 50%;
+    }
+    .timeline-item h3 {
+      color: var(--color-light);
+      font-size: var(--text-base);
+      font-family: var(--font-body);
+      margin-bottom: var(--space-1);
+    }
+    .timeline-item .time {
+      color: var(--color-accent);
+      font-family: var(--font-mono);
+      font-size: var(--text-sm);
+      margin-bottom: var(--space-2);
+    }
+    .timeline-item p {
+      color: var(--color-text-light);
+      font-size: var(--text-sm);
+      margin: 0;
+    }
+
+    .final-cta {
+      padding: var(--space-16) var(--space-6);
+      text-align: center;
+      background: var(--color-dark-secondary);
+    }
+    .final-cta h2 {
+      color: var(--color-light);
+      margin-bottom: var(--space-4);
+    }
+    .final-cta p {
+      color: var(--color-text-light);
+      margin-bottom: var(--space-8);
+      max-width: 500px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .btn-cta {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-3);
+      background: var(--color-accent);
+      color: white;
+      padding: var(--space-5) var(--space-10);
+      font-size: var(--text-lg);
+      font-weight: 600;
+      border-radius: var(--radius-md);
+      transition: all var(--transition-fast);
+    }
+    .btn-cta:hover {
+      background: var(--color-accent-dark);
+      transform: translateY(-2px);
+    }
+  </style>
+</head>
+<body class="offer-page">
+
+  <nav class="offer-nav">
+    <a href="/" class="nav-logo">JL3<span>Data</span></a>
+  </nav>
+
+  <section class="offer-hero">
+    <h1>Stop drowning in spreadsheets.<br><span>Get organized in 2 weeks.</span></h1>
+    <p class="subtitle">I'll centralize your data, automate your reports, and build dashboards you'll actually use.</p>
+
+    <div class="pain-points">
+      <div class="pain-point">
+        <span class="icon">×</span>
+        <span>Exporting CSVs from 5 different tools every week</span>
+      </div>
+      <div class="pain-point">
+        <span class="icon">×</span>
+        <span>Copy-pasting numbers into spreadsheets</span>
+      </div>
+      <div class="pain-point">
+        <span class="icon">×</span>
+        <span>Can't answer basic questions about your business</span>
+      </div>
+      <div class="pain-point">
+        <span class="icon">×</span>
+        <span>Dashboards that show last week's data</span>
+      </div>
+      <div class="pain-point">
+        <span class="icon">×</span>
+        <span>Different numbers in different reports</span>
+      </div>
+      <div class="pain-point">
+        <span class="icon">×</span>
+        <span>10+ hours/week on manual reporting</span>
+      </div>
+    </div>
+
+    <a href="https://calendly.com/jamesjlaurieiii/new-meeting" class="btn-cta" data-analytics="cta" data-analytics-id="offer-hero-cta">
+      Book a Free 20-Min Call
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M5 12h14M12 5l7 7-7 7"></path>
+      </svg>
+    </a>
+  </section>
+
+  <section class="who-section">
+    <div class="container">
+      <h2>This is for you if...</h2>
+      <div class="who-grid">
+        <div class="who-item">
+          <h3>Marketing Agency</h3>
+          <p>You're spending 20+ hours/month pulling client reports manually. Your team hates "reporting week."</p>
+        </div>
+        <div class="who-item">
+          <h3>E-commerce Store</h3>
+          <p>Shopify, QuickBooks, Google Ads, email marketing - all in different places. You don't know your real CAC.</p>
+        </div>
+        <div class="who-item">
+          <h3>SaaS / Tech Startup</h3>
+          <p>You need product analytics and marketing attribution but can't afford a $150k data engineer.</p>
+        </div>
+        <div class="who-item">
+          <h3>Professional Services</h3>
+          <p>Law firm, consulting, accounting - you have client data everywhere and no single source of truth.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="offer-hero">
+    <div class="offer-box">
+      <h2>The "Get Organized" Package</h2>
+      <div class="price">$2,500 <span>fixed price</span></div>
+
+      <div class="offer-includes">
+        <h3>What you get:</h3>
+        <ul>
+          <li><span class="check">✓</span> Data audit - I map all your sources and find the gaps</li>
+          <li><span class="check">✓</span> Central data warehouse - everything in one place</li>
+          <li><span class="check">✓</span> Automated pipelines - no more manual exports</li>
+          <li><span class="check">✓</span> Custom dashboard - YOUR metrics, not generic charts</li>
+          <li><span class="check">✓</span> Documentation - your team can maintain it without me</li>
+          <li><span class="check">✓</span> 30 days support - I'll fix anything that breaks</li>
+        </ul>
+      </div>
+
+      <div class="urgency">
+        Taking on 2 new clients this month. First call is free - no obligation.
+      </div>
+
+      <a href="https://calendly.com/jamesjlaurieiii/new-meeting" class="btn-cta" data-analytics="cta" data-analytics-id="offer-box-cta">
+        Book Your Free Call
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M5 12h14M12 5l7 7-7 7"></path>
+        </svg>
+      </a>
+    </div>
+  </section>
+
+  <section class="how-section">
+    <h2>How it works</h2>
+    <div class="timeline">
+      <div class="timeline-item">
+        <div class="time">Day 1-2</div>
+        <h3>Discovery Call + Data Audit</h3>
+        <p>We talk for 30 min. I look at your tools and data sources. You get a written plan of exactly what I'll build.</p>
+      </div>
+      <div class="timeline-item">
+        <div class="time">Day 3-7</div>
+        <h3>Build the Foundation</h3>
+        <p>I set up your data warehouse and connect your first data sources. You see data flowing within a week.</p>
+      </div>
+      <div class="timeline-item">
+        <div class="time">Day 8-12</div>
+        <h3>Dashboard + Automation</h3>
+        <p>I build your custom dashboard and automate the reports you were doing manually.</p>
+      </div>
+      <div class="timeline-item">
+        <div class="time">Day 13-14</div>
+        <h3>Handoff + Training</h3>
+        <p>You get documentation, a walkthrough, and I answer every question. You're self-sufficient.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="final-cta">
+    <h2>Ready to stop fighting your data?</h2>
+    <p>Book a free 20-minute call. No pitch, no pressure - just a conversation about your data challenges.</p>
+    <a href="https://calendly.com/jamesjlaurieiii/new-meeting" class="btn-cta" data-analytics="cta" data-analytics-id="offer-final-cta">
+      Let's Talk
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M5 12h14M12 5l7 7-7 7"></path>
+      </svg>
+    </a>
+    <p style="margin-top: var(--space-6); font-size: var(--text-sm);">
+      or email me directly: <a href="mailto:james@jamesjlaurieiii.com" style="color: var(--color-accent);">james@jamesjlaurieiii.com</a>
+    </p>
+  </section>
+
+  <script src="/assets/js/analytics.js"></script>
+</body>
+</html>

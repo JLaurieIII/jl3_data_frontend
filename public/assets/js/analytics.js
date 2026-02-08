@@ -105,7 +105,15 @@ JL3Analytics.config = {
     //
     // Think of localStorage like a tiny database in the browser.
     // We're saying "store our session under the name 'jl3_analytics_session'"
-    storageKey: "jl3_analytics_session"
+    storageKey: "jl3_analytics_session",
+
+    // OPT-OUT KEY
+    // If this key exists in localStorage with value "true", we skip tracking.
+    // This lets the site owner exclude their own traffic.
+    //
+    // To opt out: localStorage.setItem("jl3_analytics_optout", "true")
+    // To opt back in: localStorage.removeItem("jl3_analytics_optout")
+    optOutKey: "jl3_analytics_optout"
 };
 
 // ============================================================================
@@ -200,6 +208,55 @@ JL3Analytics.generateUUID = function() {
 // You'll get something like: "f47ac10b-58cc-4372-a567-0e02b2c3d479"
 // Run it again: "7c9e6679-7425-40de-944b-e07fc1f90ae7"
 // Every time = different! That's the magic of randomness.
+
+// ----------------------------------------------------------------------------
+// FUNCTION 1.5: Opt-Out Check & Management
+// ----------------------------------------------------------------------------
+//
+// WHAT IS OPT-OUT?
+// ================
+// Sometimes you don't want to track yourself. If you're the site owner,
+// your own visits would skew your data. This lets you exclude yourself.
+//
+// HOW TO USE:
+//   JL3Analytics.optOut()     → Stop tracking me
+//   JL3Analytics.optIn()      → Start tracking me again
+//   JL3Analytics.isOptedOut() → Check current status
+//
+// Or manually in browser console:
+//   localStorage.setItem("jl3_analytics_optout", "true")
+//   localStorage.removeItem("jl3_analytics_optout")
+
+JL3Analytics.isOptedOut = function() {
+    try {
+        return localStorage.getItem(JL3Analytics.config.optOutKey) === "true";
+    } catch (e) {
+        return false;  // If localStorage fails, assume not opted out
+    }
+};
+
+JL3Analytics.optOut = function() {
+    try {
+        localStorage.setItem(JL3Analytics.config.optOutKey, "true");
+        console.log("[JL3 Analytics] You are now OPTED OUT. Your visits will not be tracked.");
+        console.log("[JL3 Analytics] To opt back in, run: JL3Analytics.optIn()");
+        return true;
+    } catch (e) {
+        console.log("[JL3 Analytics] Could not save opt-out preference:", e);
+        return false;
+    }
+};
+
+JL3Analytics.optIn = function() {
+    try {
+        localStorage.removeItem(JL3Analytics.config.optOutKey);
+        console.log("[JL3 Analytics] You are now OPTED IN. Your visits will be tracked.");
+        return true;
+    } catch (e) {
+        console.log("[JL3 Analytics] Could not save opt-in preference:", e);
+        return false;
+    }
+};
 
 // ----------------------------------------------------------------------------
 // FUNCTION 2: Debug Logger
@@ -794,6 +851,14 @@ JL3Analytics.trackEvent = function(eventType, eventData) {
 // This is called "Separation of Concerns" - a key programming principle.
 
 JL3Analytics.sendEvent = function(payload) {
+    // CHECK: Is the user opted out?
+    // ==============================
+    // If they've opted out (e.g., site owner testing), skip sending
+    if (JL3Analytics.isOptedOut()) {
+        JL3Analytics.log("Event NOT sent (opted out):", payload.event_type);
+        return;  // Don't send, don't store
+    }
+
     // Log to console (always, for debugging)
     JL3Analytics.log("Event tracked:", payload);
 
